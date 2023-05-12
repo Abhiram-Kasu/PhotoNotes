@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Maui.Animations;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +18,32 @@ namespace PhotoNotes.Extensions
                 func(item);
             }
         }
+        public static void ForEach<T>(this IList<T> list, Action<T> func)
+        {
+
+            foreach (var item in list)
+            {
+                func(item);
+            }
+        }
+        public static void ForEach<T>(this Span<T> list, Action<T> func)
+        {
+
+            foreach (var item in list)
+            {
+                func(item);
+            }
+        }
+        public static void ForEach<T> (this IEnumerable<T> list, Action<T, int> func)
+        {
+            int counter = 0;
+            foreach (var item in list)
+            {
+                func(item, counter++);
+            }
+        }
+
+        
 
         public static int IndexOf<T>(this IList<T> list, Predicate<T> condition)
         {
@@ -44,5 +72,44 @@ namespace PhotoNotes.Extensions
             return -1;
 
         }
+        public static void AddRange<T>(this ObservableCollection<T> lista, IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                lista.Add(item);
+            }
+        }
+
+        public static T[] RemoveAll<T>(this ObservableCollection<T> list, Predicate<T> pred) 
+        {
+            Span<int> removeList = stackalloc int[list.Count];
+            int ptr = 0;
+            int loopPtr = 0;
+
+            foreach(var item in list)
+            {
+                if (pred(item))
+                {
+                    removeList[loopPtr] = ptr++;
+                }
+                loopPtr++;
+            }
+            var returnList = new List<T>(ptr+1);
+            removeList.ForEach(x =>
+            {
+                returnList.Add(list[x]);
+                list.RemoveAt(x);
+            });
+
+            return returnList.ToArray();
+
+
+         
+
+            
+        }
+
+
+
     }
 }

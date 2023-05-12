@@ -1,12 +1,21 @@
-﻿namespace PhotoNotes;
+﻿using PhotoNotes.ViewModels;
+
+namespace PhotoNotes;
 
 public partial class MainPage : ContentPage
 {
-
-
-	public MainPage()
+    int initial = 0;
+    private readonly MainPageViewModel viewModel;
+	public MainPage(MainPageViewModel m)
 	{
-		InitializeComponent();
+        this.BindingContext = m;
+        viewModel = m;
+        InitializeComponent();
+		
+		
+		
 	}
+
+
 }
 

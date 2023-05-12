@@ -1,11 +1,86 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PhotoNotes.Models"
+             xmlns:fonts="clr-namespace:PhotoNotes.Fonts"
               xmlns:views="clr-namespace:PhotoNotes.Views"
+             xmlns:selectors="clr-namespace:PhotoNotes.TemplateSelectors"
              x:Class="PhotoNotes.MainPage">
 
+    <ContentPage.Resources>
+        <DataTemplate x:Key="FolderItemTemplate" x:DataType="models:FolderItem">
+            <Grid ColumnDefinitions="auto, *">
+                <HorizontalStackLayout Grid.Column="0" Spacing="4" >
+                    <Image Scale=".5" VerticalOptions="Center">
+                        <Image.Source>
+                            <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" >
 
-    <Label>this is the main page</Label>
+                            </FontImageSource>
+                        </Image.Source>
+
+                    </Image>
+                    <Label VerticalOptions="Center" Text="{Binding ShortName}" FontSize="Body"/>
+                    <Label VerticalOptions="Center" Text="{Binding NumFiles}" FontSize="Body" TextColor="DarkSlateGrey"/>
+                </HorizontalStackLayout>
+
+                <ImageButton Scale=".5" BackgroundColor="Transparent" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,0,0">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Delete}" Color="Red"/>
+                    </ImageButton.Source>
+                </ImageButton>
+            </Grid>
+            
+        </DataTemplate>
+        <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
+            <Grid ColumnDefinitions="auto, *">
+                <HorizontalStackLayout Grid.Column="0"  Spacing="4" >
+                    <Image Scale=".5" VerticalOptions="Center">
+                        <Image.Source>
+                            <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Image}">
+
+                            </FontImageSource>
+                        </Image.Source>
+
+                    </Image>
+                    <Label VerticalOptions="Center" Text="{Binding ShortName}" FontSize="Body"/>
+
+                </HorizontalStackLayout>
+                <ImageButton Scale=".5" BackgroundColor="Transparent" Grid.Column="1" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Margin="0,0,0,0">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Delete}" Color="Red"/>
+                    </ImageButton.Source>
+                </ImageButton>
+            </Grid>
+            
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout>
+            <Frame IsVisible="{Binding HasFolders}" CornerRadius="5" Padding="5" Margin="5" BackgroundColor="#1B2432">
+                <Grid Padding="5" RowDefinitions="50,auto">
+                    <Label Grid.Row="0" Margin="5,0,0,0" Text="Folders" FontSize="Medium"></Label>
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding Folders}" ItemTemplate="{StaticResource FolderItemTemplate}">
+                        
+                    </CollectionView>
+                </Grid>
+                
+            </Frame>
+            <Frame IsVisible="{Binding HasFiles}" CornerRadius="5" Padding="5" Margin="5" BackgroundColor="#1B2432">
+                <Grid RowDefinitions="50, *">
+                    <Label Text="Files" FontSize="Medium"></Label>
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding Files}" ItemTemplate="{StaticResource FileItemTemplate}">
+
+                    </CollectionView>
+
+                </Grid>
+                
+            </Frame>
+        </VerticalStackLayout>
+        
+        
+    </ScrollView>
+    
     
   
 

@@ -1,5 +1,6 @@
 ﻿
 
+using PhotoNotes.Extensions;
 using PhotoNotes.Models;
 using System;
 using System.Collections.Generic;
@@ -12,51 +13,47 @@ namespace PhotoNotes.Services
     public class PhotoManagement : IPhotoManagement
     {
 
-        
 
-        private bool _isLoading = false;
-        public bool IsLoading => _isLoading;
 
-        public FolderItem MainFolder { get; set; } = new FolderItem 
+        public bool IsLoading { get; set; }
+
+        public FolderItem MainFolder { get; set; } = new FolderItem
         {
             CurrPath = IPhotoManagement.HomePath,
             Name = "Folder",
 
         };
 
-        public PhotoManagement()
-        {
-            MainThread.InvokeOnMainThreadAsync(InitFolders);
-           
+        public PhotoManagement() => InitFolders();
+        
 
-        }
-
-        private async Task InitFolders()
+        private void InitFolders()
         {
-            await Task.Run(() =>
+            IsLoading = true;
+
+            var files = Directory.GetFiles(IPhotoManagement.HomePath, "*.png");
+            MainFolder.Files.AddRange(files.Select(x => new FileItem
             {
-                var files = Directory.GetFiles(IPhotoManagement.HomePath, ".json");
-                MainFolder.Files.AddRange(files.Select(x => new FileItem
+                Name = x,
+                CurrPath = Path.Combine(IPhotoManagement.HomePath, x)
+            }));
+
+            MainFolder.Folders.AddRange(Directory.GetDirectories(IPhotoManagement.HomePath).Select(x => new FolderItem
+            {
+                Name = x,
+                CurrPath = Path.Combine(IPhotoManagement.HomePath, x)
+            }));
+
+            MainFolder.Folders.ForEach(x =>
+            {
+                x.Files.AddRange(Directory.GetFiles(x.CurrPath).Select(x => new FileItem
                 {
                     Name = x,
                     CurrPath = Path.Combine(IPhotoManagement.HomePath, x)
                 }));
-
-                MainFolder.Folders.AddRange(Directory.GetDirectories(IPhotoManagement.HomePath).Select(x => new FolderItem
-                {
-                    Name = x,
-                    CurrPath = Path.Combine(IPhotoManagement.HomePath, x)
-                }));
-
-                MainFolder.Folders.ForEach(x =>
-                {
-                    x.Files.AddRange(Directory.GetFiles(x.CurrPath).Select(x => new FileItem
-                    {
-                        Name = x,
-                        CurrPath = Path.Combine(IPhotoManagement.HomePath, x)
-                    }));
-                });
             });
+
+            IsLoading = false;
 
 
 
@@ -64,17 +61,18 @@ namespace PhotoNotes.Services
 
         public (bool successfull, string? errMessage) CreateNewFolder(string name)
         {
-            if(MainFolder.Folders.Any(x => x.Name == name))
+            if (MainFolder.Folders.Any(x => x.Name == name))
             {
                 return (false, "Folder already exists!");
             }
-            MainFolder.Folders.Add(new FolderItem 
-            { 
-                Name = name ,
-                CurrPath = Path.Combine(IPhotoManagement.HomePath , name)
+            MainFolder.Folders.Add(new FolderItem
+            {
+                Name = name,
+                CurrPath = Path.Combine(IPhotoManagement.HomePath, name)
             });
             Directory.CreateDirectory(Path.Combine(IPhotoManagement.HomePath, name));
-            MainFolder.Folders.Sort((x, y) => x.Name.CompareTo(y.Name));
+            
+            MainFolder.Folders = new (MainFolder.Folders.OrderBy(x => x.Name));
             return (true, null);
         }
 
@@ -94,26 +92,26 @@ namespace PhotoNotes.Services
 
         public bool DeleteFile(string? folder, string file)
         {
-            if(folder is null)
+            if (folder is null)
             {
                 File.Delete(Path.Combine(IPhotoManagement.HomePath, file));
                 MainFolder.Files.RemoveAll(x => x.Name == file);
                 return true;
             }
             var f = MainFolder.Folders.FirstOrDefault(x => x.Name == folder, null);
-            if(f is null) { return false; }
+            if (f is null) { return false; }
             f.Files.RemoveAll(x => x.Name == folder);
             Directory.Delete(Path.Combine(f.CurrPath, file));
             return true;
-            
-            
+
+
         }
         public (bool successfull, string? errMessage) CreateNewFile(string name, string fromPath, string? folder = null)
         {
-            if(folder is null)
+            if (folder is null)
             {
                 if (MainFolder.Files.Any(x => x.Name == name)) { return (false, "File name already exists!"); };
-                var topPath = Path.Combine(IPhotoManagement.HomePath, name);
+                var topPath = Path.Combine(IPhotoManagement.HomePath, name + ".png");
                 MainFolder.Files.Add(new FileItem
                 {
                     Name = name,
@@ -124,7 +122,7 @@ namespace PhotoNotes.Services
                 return (true, null);
             }
             var f = MainFolder.Folders.FirstOrDefault(x => x.Name == folder, null);
-            if(f.Files.Any(x => x.Name == name))
+            if (f.Files.Any(x => x.Name == name))
             {
                 return (false, "File name already exists!");
             }
@@ -139,11 +137,13 @@ namespace PhotoNotes.Services
         }
 
     }
-    public interface IPhotoManagement 
+    public interface IPhotoManagement
     {
         public static readonly string HomePath = Directory.CreateDirectory(Path.Combine(FileSystem.Current.AppDataDirectory, "Folders")).FullName;
         public static readonly string TempPath = Directory.CreateDirectory(Path.Combine(FileSystem.Current.AppDataDirectory, "TMP")).FullName;
 
+
+        public bool IsLoading { get; set; }
         public FolderItem MainFolder { get; set; }
 
         (bool successfull, string? errMessage) CreateNewFolder(string folderName);
@@ -151,6 +151,6 @@ namespace PhotoNotes.Services
         bool DeleteFile(string folder, string file);
         (bool successfull, string? errMessage) CreateNewFile(string name, string fromPath, string? folder = null);
 
-        
+
     }
 }

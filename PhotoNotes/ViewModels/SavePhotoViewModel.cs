@@ -21,6 +21,7 @@ namespace PhotoNotes.ViewModels
         public SavePhotoViewModel(IPhotoManagement photoManagement)
         {
             this.photoManagement = photoManagement;
+            
 
         }
         [ObservableProperty]
@@ -31,9 +32,13 @@ namespace PhotoNotes.ViewModels
 
         
 
-        public string[] FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToArray();
+        
 
-        public string[] FolderOptionsShort => FolderOptions.Select(x => x.Split(@"\").Last()).ToArray();
+        
+        
+        public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+
+        public IList<string> FolderOptionsShort => FolderOptions.Select(x => x.Split(@"\").Last()).ToList(); 
 
         [ObservableProperty]
         private int _selectedIndex = -1;
@@ -80,7 +85,7 @@ namespace PhotoNotes.ViewModels
                     await Shell.Current.DisplayAlert("Error", "You didn't select an folder!", "Ok");
                     return;
                 }
-                var toPath = Path.Combine(IPhotoManagement.HomePath,FolderOptions[SelectedIndex], FileName + ".png");
+                
                 photoManagement.CreateNewFolder(FolderOptions[SelectedIndex]);
                 var (successfull, errMessage) = photoManagement.CreateNewFile(folder: FolderOptions[SelectedIndex], name: FileName + ".png", fromPath: TempFilePath);
 
@@ -102,7 +107,7 @@ namespace PhotoNotes.ViewModels
                     await Shell.Current.DisplayAlert("Error", "File Name is not valid!", "Ok");
                     return;
                 }
-                var toPath = Path.Combine(IPhotoManagement.HomePath, FileName + ".png");
+                
                 var (successfull, errMessage) = photoManagement.CreateNewFile(name: FileName , fromPath: TempFilePath);
                 if (!successfull)
                 {

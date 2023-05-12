@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:font="clr-namespace:PhotoNotes.Fonts"
              x:Class="PhotoNotes.Views.PhotoPage"
              >
     <ContentPage.Resources>
@@ -11,8 +12,10 @@
     
     <Grid RowDefinitions="2*, *" VerticalOptions="Fill" HorizontalOptions="Fill">
         <cv:CameraView Grid.RowSpan="2"  x:Name="cameraView" CamerasLoaded="cameraView_CamerasLoaded" AutoStartPreview="True"  />
-        <ImageButton BackgroundColor="Transparent" Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Scale=".3" Source="radio_button_unchecked.png" x:Name="PictureButton" Clicked="PictureButton_Clicked">
-            
+        <ImageButton BackgroundColor="Transparent" Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center"  x:Name="PictureButton" Clicked="PictureButton_Clicked">
+            <ImageButton.Source>
+                <FontImageSource  Size="75" FontFamily="MaterialDesign" Glyph="{x:Static font:IconFont.CheckboxBlankCircleOutline}"/>
+            </ImageButton.Source>
         </ImageButton>
     </Grid>
         

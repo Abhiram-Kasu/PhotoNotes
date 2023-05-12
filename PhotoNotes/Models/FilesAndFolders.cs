@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PhotoNotes.Extensions;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +13,11 @@ namespace PhotoNotes.Models
     {
         public string CurrPath { get; set; }
         public string Name { get; set; }
-        public List<FolderItem> Folders { get; set;} = new List<FolderItem>();
+        public int NumFiles => Files.Count;
+        public string ShortName => Name.Split(@"\").Last();
+        public ObservableCollection<FolderItem> Folders { get; set;} = new();
 
-        public List<FileItem> Files { get; set; } = new List<FileItem>();
+        public ObservableCollection<FileItem> Files { get; set; } = new ();
     }
 
     public class FileItem
@@ -22,6 +26,8 @@ namespace PhotoNotes.Models
         private string _currPath;
         public string CurrPath { get; set; }
         public string Name { get; set; }
+
+        public string ShortName => Name.Split(@"\").Last();
 
 
     }
