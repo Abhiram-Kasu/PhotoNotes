@@ -2,11 +2,6 @@
 
 using PhotoNotes.Extensions;
 using PhotoNotes.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhotoNotes.Services
 {
@@ -24,8 +19,47 @@ namespace PhotoNotes.Services
 
         };
 
+
+        /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
+        Before:
+                public PhotoManagement() => InitFolders();
+
+
+                private void InitFolders()
+        After:
+                public PhotoManagement() => InitFolders();
+
+
+                private void InitFolders()
+        */
+
+        /* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
+        Before:
+                public PhotoManagement() => InitFolders();
+
+
+                private void InitFolders()
+        After:
+                public PhotoManagement() => InitFolders();
+
+
+                private void InitFolders()
+        */
+
+        /* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
+        Before:
+                public PhotoManagement() => InitFolders();
+
+
+                private void InitFolders()
+        After:
+                public PhotoManagement() => InitFolders();
+
+
+                private void InitFolders()
+        */
         public PhotoManagement() => InitFolders();
-        
+
 
         private void InitFolders()
         {
@@ -71,8 +105,8 @@ namespace PhotoNotes.Services
                 CurrPath = Path.Combine(IPhotoManagement.HomePath, name)
             });
             Directory.CreateDirectory(Path.Combine(IPhotoManagement.HomePath, name));
-            
-            MainFolder.Folders = new (MainFolder.Folders.OrderBy(x => x.Name));
+
+            MainFolder.Folders = new(MainFolder.Folders.OrderBy(x => x.Name));
             return (true, null);
         }
 

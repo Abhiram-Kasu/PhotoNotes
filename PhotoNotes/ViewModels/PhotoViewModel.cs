@@ -1,11 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PhotoNotes.ViewModels
+﻿namespace PhotoNotes.ViewModels
 {
     [QueryProperty(nameof(PhotoSource), nameof(PhotoSource))]
     public class PhotoViewModel

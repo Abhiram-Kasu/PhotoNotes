@@ -1,44 +1,107 @@
 ﻿
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using PhotoNotes.Extensions;
 using PhotoNotes.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhotoNotes.ViewModels
 {
     [QueryProperty(nameof(TempFilePath), nameof(TempFilePath))]
     public partial class SavePhotoViewModel : ObservableObject
     {
-        
+
         public string TempFilePath { get; set; }
 
         private readonly IPhotoManagement photoManagement;
         public SavePhotoViewModel(IPhotoManagement photoManagement)
         {
             this.photoManagement = photoManagement;
-            
+
 
         }
         [ObservableProperty]
         private bool saveToFolder;
 
         [ObservableProperty]
+
+        /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
+        Before:
+                private string fileName;
+
+
+
+
+
+
+
+                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+        After:
+                private string fileName;
+
+
+
+
+
+
+
+                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+        */
+
+        /* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
+        Before:
+                private string fileName;
+
+
+
+
+
+
+
+                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+        After:
+                private string fileName;
+
+
+
+
+
+
+
+                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+        */
+
+        /* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
+        Before:
+                private string fileName;
+
+
+
+
+
+
+
+                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+        After:
+                private string fileName;
+
+
+
+
+
+
+
+                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
+        */
         private string fileName;
 
-        
 
-        
 
-        
-        
-        public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
 
-        public IList<string> FolderOptionsShort => FolderOptions.Select(x => x.Split(@"\").Last()).ToList(); 
+
+
+
+        public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();
+
+        public IList<string> FolderOptionsShort => photoManagement.MainFolder.Folders.Select(x => x.ShortName).ToList();
 
         [ObservableProperty]
         private int _selectedIndex = -1;
@@ -46,7 +109,7 @@ namespace PhotoNotes.ViewModels
         public async Task CreateNewFolder()
         {
             var folderName = await Shell.Current.DisplayPromptAsync("Folder Name", "What would you like to name your folder");
-            if(folderName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) != -1)
+            if (folderName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) != -1)
             {
                 await Shell.Current.DisplayAlert("Error", "File Name not allowed", "Ok");
                 return;
@@ -57,8 +120,41 @@ namespace PhotoNotes.ViewModels
             {
                 await Shell.Current.DisplayAlert("Error", errMessage, "Ok");
                 return;
+
+                /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
+                Before:
+                            }
+
+                            OnPropertyChanged(nameof(FolderOptions));
+                After:
+                            }
+
+                            OnPropertyChanged(nameof(FolderOptions));
+                */
+
+                /* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
+                Before:
+                            }
+
+                            OnPropertyChanged(nameof(FolderOptions));
+                After:
+                            }
+
+                            OnPropertyChanged(nameof(FolderOptions));
+                */
+
+                /* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
+                Before:
+                            }
+
+                            OnPropertyChanged(nameof(FolderOptions));
+                After:
+                            }
+
+                            OnPropertyChanged(nameof(FolderOptions));
+                */
             }
-            
+
             OnPropertyChanged(nameof(FolderOptions));
             OnPropertyChanged(nameof(FolderOptionsShort));
             SelectedIndex = FolderOptionsShort.IndexOf(folderName);
@@ -68,24 +164,24 @@ namespace PhotoNotes.ViewModels
         public async Task Save()
         {
 
-            if(FileName is null)
+            if (FileName is null)
             {
                 await Shell.Current.DisplayAlert("Error", "File Name cannot be empty!", "Ok");
                 return;
             }
             if (SaveToFolder)
             {
-                if(FileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+                if (FileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
                 {
                     await Shell.Current.DisplayAlert("Error", "File Name is not valid!", "Ok");
                     return;
                 }
-                if(SelectedIndex == -1)
+                if (SelectedIndex == -1)
                 {
                     await Shell.Current.DisplayAlert("Error", "You didn't select an folder!", "Ok");
                     return;
                 }
-                
+
                 photoManagement.CreateNewFolder(FolderOptions[SelectedIndex]);
                 var (successfull, errMessage) = photoManagement.CreateNewFile(folder: FolderOptions[SelectedIndex], name: FileName + ".png", fromPath: TempFilePath);
 
@@ -95,8 +191,8 @@ namespace PhotoNotes.ViewModels
                     return;
                 }
 
-                
-                
+
+
                 await Shell.Current.GoToAsync($"../");
 
             }
@@ -107,22 +203,22 @@ namespace PhotoNotes.ViewModels
                     await Shell.Current.DisplayAlert("Error", "File Name is not valid!", "Ok");
                     return;
                 }
-                
-                var (successfull, errMessage) = photoManagement.CreateNewFile(name: FileName , fromPath: TempFilePath);
+
+                var (successfull, errMessage) = photoManagement.CreateNewFile(name: FileName, fromPath: TempFilePath);
                 if (!successfull)
                 {
                     await Shell.Current.DisplayAlert("Error", errMessage, "Ok");
                     return;
                 }
-                
-                
+
+
                 await Shell.Current.GoToAsync($"../");
 
             }
 
 
 
-            
+
         }
 
 

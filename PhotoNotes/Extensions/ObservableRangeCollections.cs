@@ -1,14 +1,56 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 
 namespace PhotoNotes.Extensions
+
+/* Unmerged change from project 'PhotoNotes (net7.0-ios)'
+Before:
 {
     
     
+
+    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+After:
+{
+
+
+
+    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+*/
+
+/* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
+Before:
+{
+    
+    
+
+    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+After:
+{
+
+
+
+    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+*/
+
+/* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
+Before:
+{
+    
+    
+
+    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+After:
+{
+
+
+
+    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
+*/
+{
+
+
 
     public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
@@ -101,10 +143,11 @@ namespace PhotoNotes.Extensions
         public void RemoveAll(Predicate<T> condition)
         {
             var list = new List<T>();
-            _items.RemoveAll((x) => {
+            _items.RemoveAll((x) =>
+            {
                 list.Add(x);
                 return condition(x);
-                });
+            });
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, list));
 
 

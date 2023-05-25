@@ -1,4 +1,3 @@
-using Camera.MAUI;
 using PhotoNotes.Services;
 using PhotoNotes.ViewModels;
 
@@ -7,17 +6,17 @@ namespace PhotoNotes.Views;
 public partial class PhotoPage : ContentPage
 {
     bool loaded = false;
-	public PhotoPage()
-	{
-        
-		InitializeComponent();
-	}
+    public PhotoPage()
+    {
+
+        InitializeComponent();
+    }
 
     private void cameraView_CamerasLoaded(object sender, EventArgs e)
     {
         if (cameraView.NumCamerasDetected > 0)
         {
-            
+
             cameraView.Camera = cameraView.Cameras.First();
             cameraView.AutoStartPreview = true;
             MainThread.BeginInvokeOnMainThread(async () =>
@@ -38,7 +37,7 @@ public partial class PhotoPage : ContentPage
     {
         base.OnDisappearing();
         var res = MainThread.InvokeOnMainThreadAsync(() => cameraView.StopCameraAsync());
-        
+
 
     }
 
@@ -50,7 +49,7 @@ public partial class PhotoPage : ContentPage
         {
             var res = MainThread.InvokeOnMainThreadAsync(() => cameraView.StartCameraAsync());
         }
-        
+
     }
 
 

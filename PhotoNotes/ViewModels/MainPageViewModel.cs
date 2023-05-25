@@ -3,12 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PhotoNotes.Extensions;
 using PhotoNotes.Models;
 using PhotoNotes.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhotoNotes.ViewModels
 {
@@ -23,31 +18,75 @@ namespace PhotoNotes.ViewModels
 
         public bool HasFolders => Folders.Any();
 
-        public ObservableCollection<FileItem> Files { get; set;  }
+        public ObservableCollection<FileItem> Files { get; set; }
         public ObservableCollection<FolderItem> Folders { get; set; }
 
         public MainPageViewModel(IPhotoManagement photoManagement)
         {
-            
+
             this.photoManagement = photoManagement;
             (Folders, Files) = (photoManagement.MainFolder.Folders, photoManagement.MainFolder.Files);
 
-            
+
             Files.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFiles));
             Folders.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFolders));
-            
+
 
 
 
         }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CurrTitle))]
+        private string? currFolder = null;
 
+        public string CurrTitle => CurrFolder ?? "Files";
 
-        public void Update()
+        [RelayCommand]
+        public void DeleteFolderItem(string name)
         {
-            
+            photoManagement.DeleteFolder(name);
+            Folders.RemoveAll(x => x.Name == name);
+        }
+        [RelayCommand]
+        public void DeleteFileItem(string name)
+        {
+            if (CurrFolder is null)
+            {
+                photoManagement.DeleteFile(null, name);
+
+            }
+            else
+            {
+                photoManagement.DeleteFile(CurrFolder, name);
+            }
+            Files.RemoveAll(x => x.Name == name);
+
+
         }
 
-        
+        [RelayCommand]
+        public void SelectFolder(string name)
+        {
+            CurrFolder = name;
+            var folder = Folders.Single(x => x.Name == name);
+
+
+            Files = folder.Files;
+
+            OnPropertyChanged(nameof(Files));
+
+        }
+        [RelayCommand]
+        public void BackToMain()
+        {
+            CurrFolder = null;
+            Folders = photoManagement.MainFolder.Folders;
+            OnPropertyChanged(nameof(Folders));
+            Files = photoManagement.MainFolder.Files;
+            OnPropertyChanged(nameof(Files));
+
+        }
+
 
     }
 }

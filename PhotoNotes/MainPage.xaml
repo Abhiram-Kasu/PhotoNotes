@@ -9,32 +9,47 @@
 
     <ContentPage.Resources>
         <DataTemplate x:Key="FolderItemTemplate" x:DataType="models:FolderItem">
-            <Grid ColumnDefinitions="auto, *">
-                <HorizontalStackLayout Grid.Column="0" Spacing="4" >
-                    <Image Scale=".5" VerticalOptions="Center">
-                        <Image.Source>
-                            <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" >
+            <Grid>
+                
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped" Command="{Binding SelectFolderCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Name}"/>
+                </Grid.GestureRecognizers>
+            <SwipeView>
+                
+                
+                <SwipeView.RightItems>
+                    <SwipeItem Text="Delete" Clicked="MenuItem_OnClicked" BackgroundColor="Red" Command="{Binding DeleteFolderItemCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Name}"/>
+                </SwipeView.RightItems>
+                <Grid ColumnDefinitions="auto, *">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="4" >
+                        <Image HeightRequest="50" WidthRequest="50" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" >
 
-                            </FontImageSource>
-                        </Image.Source>
+                                </FontImageSource>
+                            </Image.Source>
 
-                    </Image>
-                    <Label VerticalOptions="Center" Text="{Binding ShortName}" FontSize="Body"/>
-                    <Label VerticalOptions="Center" Text="{Binding NumFiles}" FontSize="Body" TextColor="DarkSlateGrey"/>
-                </HorizontalStackLayout>
+                        </Image>
+                        <Label VerticalOptions="Center" Text="{Binding ShortName}" FontSize="Body"/>
+                        <Label VerticalOptions="Center" Text="{Binding NumFiles}" FontSize="Body" TextColor="DarkSlateGrey"/>
+                    </HorizontalStackLayout>
 
-                <ImageButton Scale=".5" BackgroundColor="Transparent" Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center" Margin="0,0,0,0">
-                    <ImageButton.Source>
-                        <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Delete}" Color="Red"/>
-                    </ImageButton.Source>
-                </ImageButton>
+                    
+                </Grid>
+
+            </SwipeView>
             </Grid>
             
         </DataTemplate>
         <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
+            <SwipeView>
+                
+                <SwipeView.RightItems>
+                    <SwipeItem Text="Delete" BackgroundColor="Red" Command="{Binding DeletePhotoItemCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Name}"/>
+                </SwipeView.RightItems>
             <Grid ColumnDefinitions="auto, *">
                 <HorizontalStackLayout Grid.Column="0"  Spacing="4" >
-                    <Image Scale=".5" VerticalOptions="Center">
+                    <Image HeightRequest="50" WidthRequest="50"  VerticalOptions="Center">
                         <Image.Source>
                             <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Image}">
 
@@ -45,19 +60,16 @@
                     <Label VerticalOptions="Center" Text="{Binding ShortName}" FontSize="Body"/>
 
                 </HorizontalStackLayout>
-                <ImageButton Scale=".5" BackgroundColor="Transparent" Grid.Column="1" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Margin="0,0,0,0">
-                    <ImageButton.Source>
-                        <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Delete}" Color="Red"/>
-                    </ImageButton.Source>
-                </ImageButton>
+                
             </Grid>
+            </SwipeView>
             
         </DataTemplate>
     </ContentPage.Resources>
 
-    <ScrollView>
+    <ScrollView>  
         <VerticalStackLayout>
-            <Frame IsVisible="{Binding HasFolders}" CornerRadius="5" Padding="5" Margin="5" BackgroundColor="#1B2432">
+            <Frame IsVisible="{Binding HasFolders}" CornerRadius="5" Padding="5" Margin="5" BackgroundColor="{AppThemeBinding Dark=#1B2432, Light=#D4E6B5}">
                 <Grid Padding="5" RowDefinitions="50,auto">
                     <Label Grid.Row="0" Margin="5,0,0,0" Text="Folders" FontSize="Medium"></Label>
                     <CollectionView Grid.Row="1" ItemsSource="{Binding Folders}" ItemTemplate="{StaticResource FolderItemTemplate}">
@@ -66,9 +78,9 @@
                 </Grid>
                 
             </Frame>
-            <Frame IsVisible="{Binding HasFiles}" CornerRadius="5" Padding="5" Margin="5" BackgroundColor="#1B2432">
+            <Frame IsVisible="{Binding HasFiles}" CornerRadius="5" Padding="5" Margin="5" BackgroundColor="{AppThemeBinding Dark=#1B2432, Light=#D4E6B5}">
                 <Grid RowDefinitions="50, *">
-                    <Label Text="Files" FontSize="Medium"></Label>
+                    <Label Text="{Binding CurrTitle}" FontSize="Medium"></Label>
                     <CollectionView Grid.Row="1" ItemsSource="{Binding Files}" ItemTemplate="{StaticResource FileItemTemplate}">
 
                     </CollectionView>
