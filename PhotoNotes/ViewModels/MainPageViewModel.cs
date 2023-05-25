@@ -20,7 +20,8 @@ namespace PhotoNotes.ViewModels
 
         public ObservableCollection<FileItem> Files { get; set; }
         public ObservableCollection<FolderItem> Folders { get; set; }
-
+        private static readonly ObservableCollection<FolderItem> EmptyFolderCollection = new (Enumerable.Empty<FolderItem>());
+        private static readonly ObservableCollection<FileItem> EmptyFileCollection = new(Enumerable.Empty<FileItem>());
         public MainPageViewModel(IPhotoManagement photoManagement)
         {
 
@@ -37,9 +38,23 @@ namespace PhotoNotes.ViewModels
         }
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(CurrTitle))]
+        [NotifyPropertyChangedFor(nameof(ShowHomeButton))]
         private string? currFolder = null;
 
+        public bool ShowHomeButton => CurrFolder is not null;
+
         public string CurrTitle => CurrFolder ?? "Files";
+
+        [RelayCommand]
+        public void BackToHome()
+        {
+            Folders = photoManagement.MainFolder.Folders;
+            Files = photoManagement.MainFolder.Files;
+            CurrFolder = null;
+            OnPropertyChanged(nameof(Files));
+            OnPropertyChanged(nameof(HasFolders));
+            OnPropertyChanged(nameof(HasFiles));
+        }
 
         [RelayCommand]
         public void DeleteFolderItem(string name)
@@ -67,14 +82,21 @@ namespace PhotoNotes.ViewModels
         [RelayCommand]
         public void SelectFolder(string name)
         {
-            CurrFolder = name;
+            
             var folder = Folders.Single(x => x.Name == name);
-
+            CurrFolder = folder.ShortName;
 
             Files = folder.Files;
+            Folders = EmptyFolderCollection;
 
+            OnPropertyChanged(nameof(HasFolders));
             OnPropertyChanged(nameof(Files));
 
+        }
+        [RelayCommand]
+        public void SelectFile(string name)
+        {
+            //TODO 
         }
         [RelayCommand]
         public void BackToMain()

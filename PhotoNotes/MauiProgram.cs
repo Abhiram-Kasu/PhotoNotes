@@ -1,4 +1,5 @@
 ﻿using Camera.MAUI;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using PhotoNotes.Services;
 using PhotoNotes.ViewModels;
@@ -26,7 +27,7 @@ public static class MauiProgram
         builder
             .UseMauiCameraView()
             .UseMauiApp<App>()
-
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("RobotoMono-Regular.ttf", "RobotoMonoRegular");

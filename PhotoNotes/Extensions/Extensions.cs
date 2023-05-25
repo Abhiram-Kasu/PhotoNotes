@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿
+using System.Collections.ObjectModel;
 
 namespace PhotoNotes.Extensions
 {
@@ -135,6 +136,8 @@ namespace PhotoNotes.Extensions
 
 
         }
+
+        
 
 
 
