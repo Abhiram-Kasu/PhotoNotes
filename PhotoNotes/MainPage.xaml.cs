@@ -30,7 +30,10 @@ public partial class MainPage : ContentPage
 
     private void FileCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (e.CurrentSelection.Count == 0) return;
+        (sender as CollectionView).SelectedItems.Clear();
         viewModel.SelectFile((e.CurrentSelection[0] as FileItem).Name);
+
     }
 
     private void FolderCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)

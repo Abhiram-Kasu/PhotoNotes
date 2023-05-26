@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PhotoNotes.Extensions;
 using PhotoNotes.Models;
 using PhotoNotes.Services;
+using PhotoNotes.Views;
 using System.Collections.ObjectModel;
 
 namespace PhotoNotes.ViewModels
@@ -94,9 +95,10 @@ namespace PhotoNotes.ViewModels
 
         }
         [RelayCommand]
-        public void SelectFile(string name)
+        public async Task SelectFile(string name)
         {
             //TODO 
+            await Shell.Current.GoToAsync($"secret/{nameof(PhotoView)}?{nameof(PhotoViewModel.PhotoSource)}={name}");
         }
         [RelayCommand]
         public void BackToMain()
