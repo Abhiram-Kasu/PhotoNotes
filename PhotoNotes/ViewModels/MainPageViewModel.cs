@@ -84,7 +84,7 @@ namespace PhotoNotes.ViewModels
         public void SelectFolder(string name)
         {
             
-            var folder = Folders.Single(x => x.Name == name);
+            var folder = Folders.Single(x => x.CurrPath == name);
             CurrFolder = folder.ShortName;
 
             Files = folder.Files;

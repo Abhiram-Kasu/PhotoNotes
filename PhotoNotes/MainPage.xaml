@@ -7,54 +7,42 @@
     xmlns:models="clr-namespace:PhotoNotes.Models"
     xmlns:selectors="clr-namespace:PhotoNotes.TemplateSelectors"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:views="clr-namespace:PhotoNotes.Views">
+    xmlns:views="clr-namespace:PhotoNotes.Views"
+    Shell.TabBarIsVisible="True">
 
     <ContentPage.Resources>
         <DataTemplate x:Key="FolderItemTemplate" x:DataType="models:FolderItem">
             <Grid>
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Command="{Binding SelectFolderCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                        CommandParameter="{Binding Name}"
-                        Tapped="TapGestureRecognizer_OnTapped" />
+                    <TapGestureRecognizer Command="{Binding SelectFolderCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Name}" />
                 </Grid.GestureRecognizers>
-                <SwipeView>
+
+                <Grid ColumnDefinitions="auto, *">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="4">
+                        <Image
+                            HeightRequest="30"
+                            VerticalOptions="Center"
+                            WidthRequest="30">
+                            <Image.Source>
+                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" />
+                            </Image.Source>
+
+                        </Image>
+                        <Label
+                            FontSize="Body"
+                            Text="{Binding ShortName}"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontSize="Body"
+                            Text="{Binding NumFiles}"
+                            TextColor="DarkSlateGrey"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
 
 
-                    <SwipeView.RightItems>
-                        <SwipeItem
-                            BackgroundColor="Red"
-                            Clicked="MenuItem_OnClicked"
-                            Command="{Binding DeleteFolderItemCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                            CommandParameter="{Binding Name}"
-                            Text="Delete" />
-                    </SwipeView.RightItems>
-                    <Grid ColumnDefinitions="auto, *">
-                        <HorizontalStackLayout Grid.Column="0" Spacing="4">
-                            <Image
-                                HeightRequest="50"
-                                VerticalOptions="Center"
-                                WidthRequest="50">
-                                <Image.Source>
-                                    <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" />
-                                </Image.Source>
-
-                            </Image>
-                            <Label
-                                FontSize="Body"
-                                Text="{Binding ShortName}"
-                                VerticalOptions="Center" />
-                            <Label
-                                FontSize="Body"
-                                Text="{Binding NumFiles}"
-                                TextColor="DarkSlateGrey"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
+                </Grid>
 
 
-                    </Grid>
-
-                </SwipeView>
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">
                         <VisualState Name="Normal" />
@@ -70,33 +58,24 @@
 
         </DataTemplate>
         <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
-            <SwipeView>
-                <SwipeView.RightItems>
-                    <SwipeItem
-                        BackgroundColor="Red"
-                        Command="{Binding DeletePhotoItemCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                        CommandParameter="{Binding Name}"
-                        Text="Delete" />
-                </SwipeView.RightItems>
-                <Grid ColumnDefinitions="auto, *">
-                    <HorizontalStackLayout Grid.Column="0" Spacing="4">
-                        <Image
-                            HeightRequest="50"
-                            VerticalOptions="Center"
-                            WidthRequest="50">
-                            <Image.Source>
-                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Image}" />
-                            </Image.Source>
 
-                        </Image>
-                        <Label
-                            FontSize="Body"
-                            Text="{Binding ShortName}"
-                            VerticalOptions="Center" />
+            <Grid ColumnDefinitions="auto, *">
+                <HorizontalStackLayout Grid.Column="0" Spacing="4">
+                    <Image
+                        HeightRequest="30"
+                        VerticalOptions="Center"
+                        WidthRequest="30">
+                        <Image.Source>
+                            <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Image}" />
+                        </Image.Source>
 
-                    </HorizontalStackLayout>
+                    </Image>
+                    <Label
+                        FontSize="Body"
+                        Text="{Binding ShortName}"
+                        VerticalOptions="Center" />
 
-                </Grid>
+                </HorizontalStackLayout>
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">
                         <VisualState Name="Normal" />
@@ -108,7 +87,9 @@
 
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
-            </SwipeView>
+            </Grid>
+
+
 
         </DataTemplate>
     </ContentPage.Resources>
@@ -144,25 +125,29 @@
                                                   Light=#D4E6B5}"
                 CornerRadius="5"
                 IsVisible="{Binding HasFiles}">
+
                 <Grid RowDefinitions="50, *">
-                    <Grid Margin="5,0,5,0" ColumnDefinitions="*,*">
+                    <HorizontalStackLayout Margin="5,0,5,0">
+                        <ImageButton
+                            Margin="0,0,10,0"
+                            Command="{Binding BackToHomeCommand}"
+                            CornerRadius="5"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            IsVisible="{Binding ShowHomeButton}"
+                            WidthRequest="30">
+
+                            <ImageButton.Source>
+                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.ArrowLeft}" />
+                            </ImageButton.Source>
+                        </ImageButton>
                         <Label
                             FontSize="Medium"
                             HorizontalOptions="Start"
                             Text="{Binding CurrTitle}"
                             VerticalOptions="Center" />
-                        <ImageButton
-                            Grid.Column="1"
-                            Command="{Binding BackToHomeCommand}"
-                            HeightRequest="30"
-                            HorizontalOptions="End"
-                            IsVisible="{Binding ShowHomeButton}"
-                            WidthRequest="30">
-                            <ImageButton.Source>
-                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Home}" />
-                            </ImageButton.Source>
-                        </ImageButton>
-                    </Grid>
+
+                    </HorizontalStackLayout>
 
                     <CollectionView
                         Grid.Row="1"

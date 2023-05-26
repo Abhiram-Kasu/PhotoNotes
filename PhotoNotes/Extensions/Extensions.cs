@@ -3,8 +3,32 @@ using System.Collections.ObjectModel;
 
 namespace PhotoNotes.Extensions
 {
+     public class ToggleButton : Button
+    {
+        public bool IsChecked { 
+            get => (bool)GetValue(IsCheckedProperty); 
+            set => SetValue(IsCheckedProperty, value); 
+        }
+        public static readonly BindableProperty IsCheckedProperty = BindableProperty.Create(nameof(IsChecked), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay);
+        public Color DefaultBG { get; set; }
+        public Color SelectedBG { get; set; }
+        public ToggleButton()
+        {
+            
+            Clicked += (_, _) =>
+            {
+                DefaultBG ??= BackgroundColor;
+                IsChecked = !IsChecked;
+                BackgroundColor = BackgroundColor == DefaultBG ? SelectedBG : DefaultBG;
+            };
+            
+            DefaultBG = BackgroundColor;
+        }
+    }
+    
     public static class Extensions
     {
+
         public static void ForEach<T>(this IEnumerable<T> list, Action<T> func)
 
         /* Unmerged change from project 'PhotoNotes (net7.0-ios)'

@@ -1,28 +1,49 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels"
-             x:Class="PhotoNotes.Views.SavePhotoView">
-    
-    <VerticalStackLayout Spacing="5" Padding="10">
-        <Label FontSize="Large" >Save Options</Label>
-        <Border StrokeShape="RoundRectangle 10" HorizontalOptions="Start" Padding="5" BackgroundColor="SeaGreen">
-            <HorizontalStackLayout Opacity="1" >
-                <Label Margin="10,0,0,0" VerticalOptions="Center">Save To Folder:</Label>
-                <CheckBox VerticalOptions="Center" IsChecked="{Binding SaveToFolder}"></CheckBox>
-            </HorizontalStackLayout>
-        </Border>
-        <Border StrokeShape="RoundRectangle 10" HorizontalOptions="Start" Padding="5" BackgroundColor="DarkGreen">
-            <VerticalStackLayout Spacing="5">
-        
-        <HorizontalStackLayout IsVisible="{Binding SaveToFolder}" Spacing="10">
-            <Picker Title="Select a Folder"  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding FolderOptionsShort, Mode=TwoWay}"></Picker>
-            <Button Command="{Binding CreateNewFolderCommand}" Text="Create New Folder"/>
-        </HorizontalStackLayout>
-        
-        <Entry Placeholder="Enter file name here: " HorizontalOptions="Start" Text="{Binding FileName}"></Entry>
-        <Button Command="{Binding SaveCommand}" HorizontalOptions="Start" Text="Save"></Button>
-            </VerticalStackLayout>
-        </Border>
+<ContentPage
+    x:Class="PhotoNotes.Views.SavePhotoView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:extensions="clr-namespace:PhotoNotes.Extensions"
+    xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels">
+
+    <VerticalStackLayout Padding="10" Spacing="5">
+        <Label FontSize="Large">Save Options</Label>
+
+        <extensions:ToggleButton
+            BackgroundColor="Red"
+            IsChecked="{Binding SaveToFolder}"
+            SelectedBG="Green"
+            Text="Save To Folder" />
+
+
+        <VerticalStackLayout Spacing="5">
+
+            <Grid ColumnDefinitions="*,auto" IsVisible="{Binding SaveToFolder}">
+                <Picker
+                    Title="Select a Folder"
+                    Margin="0,0,10,0"
+                    ItemsSource="{Binding FolderOptionsShort, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding CreateNewFolderCommand}"
+                    Text="Create New Folder" />
+            </Grid>
+            <Grid ColumnDefinitions="*,auto">
+                <Entry
+                    Grid.Column="0"
+                    Margin="0,0,10,0"
+                    HorizontalOptions="Fill"
+                    Placeholder="Enter file name here: "
+                    Text="{Binding FileName}" />
+                <Button
+                    Grid.Column="1"
+                    Command="{Binding SaveCommand}"
+                    HorizontalOptions="End"
+                    Text="Save" />
+            </Grid>
+
+        </VerticalStackLayout>
+
     </VerticalStackLayout>
 </ContentPage>

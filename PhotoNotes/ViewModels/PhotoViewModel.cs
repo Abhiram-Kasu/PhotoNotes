@@ -7,7 +7,10 @@ namespace PhotoNotes.ViewModels
     public partial class PhotoViewModel: ObservableObject
     {
         public string ShortPhotoName => Path.GetFileNameWithoutExtension(PhotoSource);
-        public string PhotoSource { get; set; }
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ImageStream))]
+        private string _photoSource;
+        
 
         public ImageSource ImageStream => ImageSource.FromStream(() => File.OpenRead(PhotoSource));
 
