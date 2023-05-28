@@ -9,6 +9,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels"
     xmlns:views="clr-namespace:PhotoNotes.Views"
+    Shell.TabBarBackgroundColor="Black"
+    Shell.TabBarForegroundColor="AliceBlue"
     Shell.TabBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior
@@ -21,7 +23,8 @@
         <DataTemplate x:Key="FolderItemTemplate" x:DataType="models:FolderItem">
             <Border
                 Padding="10"
-                BackgroundColor="Black"
+                BackgroundColor="{AppThemeBinding Dark=Black,
+                                                  Light={StaticResource Tertiary}}"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="0">
                 <Grid ColumnDefinitions="*, auto ">
@@ -88,7 +91,8 @@
         <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
             <Border
                 Padding="10"
-                BackgroundColor="Black"
+                BackgroundColor="{AppThemeBinding Dark=Black,
+                                                  Light={StaticResource Tertiary}}"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="0">
                 <Grid ColumnDefinitions="*, auto">
@@ -144,13 +148,13 @@
         </DataTemplate>
     </ContentPage.Resources>
 
-    <ScrollView>
+    <ScrollView BackgroundColor="{AppThemeBinding Dark=Black, Light=White}">
         <VerticalStackLayout>
             <Frame
                 Margin="5"
                 Padding="5"
-                BackgroundColor="{AppThemeBinding Dark=#1B2432,
-                                                  Light=#D4E6B5}"
+                BackgroundColor="{AppThemeBinding Dark=#04151F,
+                                                  Light={StaticResource Primary}}"
                 CornerRadius="5"
                 IsVisible="{Binding HasFolders}">
                 <Grid Padding="5" RowDefinitions="50,auto">
@@ -171,8 +175,8 @@
             <Frame
                 Margin="5"
                 Padding="5"
-                BackgroundColor="{AppThemeBinding Dark=#1B2432,
-                                                  Light=#D4E6B5}"
+                BackgroundColor="{AppThemeBinding Dark=#04151F,
+                                                  Light={StaticResource Primary}}"
                 CornerRadius="5"
                 IsVisible="{Binding HasFiles}">
 

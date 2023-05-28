@@ -6,7 +6,7 @@
     xmlns:extensions="clr-namespace:PhotoNotes.Extensions"
     xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels">
 
-    <VerticalStackLayout Padding="10" Spacing="5">
+    <VerticalStackLayout Padding="10" Spacing="5" BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark=Black}">
         <Label FontSize="Large">Save Options</Label>
 
         <extensions:ToggleButton

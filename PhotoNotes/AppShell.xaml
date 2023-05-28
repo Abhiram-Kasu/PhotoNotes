@@ -10,7 +10,7 @@
 
     
 
-    <TabBar >
+    <TabBar>
         <Tab Title="Main Page">
             <ShellContent
         
