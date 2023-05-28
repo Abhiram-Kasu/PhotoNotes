@@ -7,18 +7,25 @@
     xmlns:models="clr-namespace:PhotoNotes.Models"
     xmlns:selectors="clr-namespace:PhotoNotes.TemplateSelectors"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels"
     xmlns:views="clr-namespace:PhotoNotes.Views"
     Shell.TabBarIsVisible="True">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior
+            Command="{Binding BackToHomeCommand}"
+            IsEnabled="{Binding ShowHomeButton}"
+            IsVisible="{Binding ShowHomeButton}" />
+    </Shell.BackButtonBehavior>
 
     <ContentPage.Resources>
         <DataTemplate x:Key="FolderItemTemplate" x:DataType="models:FolderItem">
-            <Grid>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectFolderCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}" CommandParameter="{Binding Name}" />
-                </Grid.GestureRecognizers>
-
-                <Grid ColumnDefinitions="auto, *">
-                    <HorizontalStackLayout Grid.Column="0" Spacing="4">
+            <Border
+                Padding="10"
+                BackgroundColor="Black"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
+                <Grid ColumnDefinitions="*, auto ">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="10">
                         <Image
                             HeightRequest="30"
                             VerticalOptions="Center"
@@ -39,55 +46,98 @@
                             VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
+                    <ImageButton
+                        BackgroundColor="Transparent"
+                        Command="{Binding DeleteFolderItemCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}"
+                        CommandParameter="{Binding CurrPath}"
+                        HeightRequest="30"
+                        HorizontalOptions="End"
+                        WidthRequest="30">
+                        <ImageButton.Source>
+                            <FontImageSource
+                                FontFamily="MaterialDesign"
+                                Glyph="{x:Static fonts:IconFont.Delete}"
+                                Color="Red" />
+                        </ImageButton.Source>
+
+                    </ImageButton>
+
 
                 </Grid>
 
 
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">
-                        <VisualState Name="Normal" />
+                        <VisualState Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="Black" />
+                            </VisualState.Setters>
+                        </VisualState>
+
                         <VisualState Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                <Setter Property="BackgroundColor" Value="White" />
                             </VisualState.Setters>
                         </VisualState>
 
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
-            </Grid>
+            </Border>
 
         </DataTemplate>
         <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
+            <Border
+                Padding="10"
+                BackgroundColor="Black"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
+                <Grid ColumnDefinitions="*, auto">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="10">
+                        <Border
+                            HeightRequest="30"
+                            StrokeShape="RoundRectangle 5"
+                            StrokeThickness="0"
+                            WidthRequest="30">
 
-            <Grid ColumnDefinitions="auto, *">
-                <HorizontalStackLayout Grid.Column="0" Spacing="4">
-                    <Image
+
+                            <Image
+                                Aspect="AspectFill"
+                                Source="{Binding Image}"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <Label
+                            FontSize="Body"
+                            Text="{Binding ShortName}"
+                            VerticalOptions="Center" />
+
+                    </HorizontalStackLayout>
+                    <ImageButton
+                        BackgroundColor="Transparent"
+                        Command="{Binding DeleteFileItemCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}"
+                        CommandParameter="{Binding CurrPath}"
                         HeightRequest="30"
-                        VerticalOptions="Center"
+                        HorizontalOptions="End"
                         WidthRequest="30">
-                        <Image.Source>
-                            <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Image}" />
-                        </Image.Source>
+                        <ImageButton.Source>
+                            <FontImageSource
+                                FontFamily="MaterialDesign"
+                                Glyph="{x:Static fonts:IconFont.Delete}"
+                                Color="Red" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup Name="CommonStates">
+                            <VisualState Name="Normal" />
+                            <VisualState Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
 
-                    </Image>
-                    <Label
-                        FontSize="Body"
-                        Text="{Binding ShortName}"
-                        VerticalOptions="Center" />
-
-                </HorizontalStackLayout>
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup Name="CommonStates">
-                        <VisualState Name="Normal" />
-                        <VisualState Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="Transparent" />
-                            </VisualState.Setters>
-                        </VisualState>
-
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-            </Grid>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                </Grid>
+            </Border>
 
 
 
@@ -160,9 +210,10 @@
 
             </Frame>
         </VerticalStackLayout>
-
-
     </ScrollView>
+
+
+
 
 
 

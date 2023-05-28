@@ -58,10 +58,19 @@ namespace PhotoNotes.ViewModels
         }
 
         [RelayCommand]
-        public void DeleteFolderItem(string name)
+        public async Task DeleteFolderItem(string name)
         {
+            var folder = Folders.First(x => x.CurrPath == name);
+            if(folder.NumFiles > 0)
+            {
+                if(!await Shell.Current.DisplayAlert("Warning", $"Are you sure you want to delete the nested {folder.NumFiles} inside this folder?", "Yes", "No"))
+                {
+                    return;
+                }
+            }
+            
             photoManagement.DeleteFolder(name);
-            Folders.RemoveAll(x => x.Name == name);
+            
         }
         [RelayCommand]
         public void DeleteFileItem(string name)
@@ -75,7 +84,7 @@ namespace PhotoNotes.ViewModels
             {
                 photoManagement.DeleteFile(CurrFolder, name);
             }
-            Files.RemoveAll(x => x.Name == name);
+            //Files.RemoveAll(x => x.CurrPath == name);
 
 
         }

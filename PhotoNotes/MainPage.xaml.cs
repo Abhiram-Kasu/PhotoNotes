@@ -12,7 +12,7 @@ public partial class MainPage : ContentPage
         this.BindingContext = m;
         viewModel = m;
         InitializeComponent();
-        
+
 
 
     }
@@ -31,7 +31,7 @@ public partial class MainPage : ContentPage
     private async void FileCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (e.CurrentSelection.Count == 0) return;
-        
+
         await viewModel.SelectFile((e.CurrentSelection[0] as FileItem).CurrPath);
         (sender as CollectionView).SelectedItems.Clear();
         (sender as CollectionView).SelectedItem = null;
@@ -40,12 +40,13 @@ public partial class MainPage : ContentPage
     private void FolderCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (e.CurrentSelection.Count == 0) return;
-        var currName = (e.CurrentSelection[0] as FolderItem).Name;
+        var currName = (e.CurrentSelection[0] as FolderItem).CurrPath;
         (sender as CollectionView).SelectedItems.Clear();
         (sender as CollectionView).SelectedItem = null;
 
         viewModel.SelectFolder(currName);
-        
+
     }
+
 }
 

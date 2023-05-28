@@ -120,7 +120,7 @@ namespace PhotoNotes.Services
             }
 
             MainFolder.Folders.Remove(f);
-            Directory.Delete(f.CurrPath);
+            Directory.Delete(f.CurrPath, true);
             return true;
         }
 
@@ -129,13 +129,13 @@ namespace PhotoNotes.Services
             if (folder is null)
             {
                 File.Delete(Path.Combine(IPhotoManagement.HomePath, file));
-                MainFolder.Files.RemoveAll(x => x.Name == file);
+                MainFolder.Files.Remove(MainFolder.Files.FirstOrDefault(x => x.CurrPath == file));
                 return true;
             }
-            var f = MainFolder.Folders.FirstOrDefault(x => x.Name == folder, null);
+            var f = MainFolder.Folders.FirstOrDefault(x => x.ShortName == folder, null);
             if (f is null) { return false; }
-            f.Files.RemoveAll(x => x.Name == folder);
-            Directory.Delete(Path.Combine(f.CurrPath, file));
+            f.Files.Remove(f.Files.FirstOrDefault(x => x.CurrPath == file));
+            File.Delete(file);
             return true;
 
 
