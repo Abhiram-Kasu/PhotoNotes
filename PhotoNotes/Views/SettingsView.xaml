@@ -36,7 +36,12 @@
                 <CheckBox IsChecked="{Binding SaveToFolder}" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-
+            <Button
+                BackgroundColor="{Binding ClearTMPButtonBackgroundColor}"
+                Command="{Binding ClearTMPCommand}"
+                IsEnabled="{Binding CanClearTMPFolder}"
+                Text="{Binding ClearTMPFolderText}"
+                TextColor="White" />
 
 
         </VerticalStackLayout>

@@ -19,6 +19,8 @@ namespace PhotoNotes.Services
 
         };
 
+        
+
 
         /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
         Before:
@@ -169,14 +171,19 @@ namespace PhotoNotes.Services
             File.Move(fromPath, path);
             return (true, null);
         }
-
+        public double TMPFolderSize => Directory.GetFiles(IPhotoManagement.TempPath).Sum(x => new FileInfo(x).Length);
+        public void ClearTMPFolder()
+        {
+            Directory.GetFiles(IPhotoManagement.TempPath).ForEach(x => File.Delete(x));
+            
+        }
     }
     public interface IPhotoManagement
     {
         public static readonly string HomePath = Directory.CreateDirectory(Path.Combine(FileSystem.Current.AppDataDirectory, "Folders")).FullName;
         public static readonly string TempPath = Directory.CreateDirectory(Path.Combine(FileSystem.Current.AppDataDirectory, "TMP")).FullName;
 
-
+        public abstract double TMPFolderSize { get; }
         public bool IsLoading { get; set; }
         public FolderItem MainFolder { get; set; }
 
@@ -185,6 +192,7 @@ namespace PhotoNotes.Services
         bool DeleteFile(string folder, string file);
         (bool successfull, string? errMessage) CreateNewFile(string name, string fromPath, string? folder = null);
 
+        void ClearTMPFolder();
 
     }
 }
