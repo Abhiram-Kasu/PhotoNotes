@@ -10,6 +10,7 @@
         <Label FontSize="Large">Save Options</Label>
 
         <extensions:ToggleButton
+            x:Name="SaveToFolderToggleButton"
             BackgroundColor="Red"
             IsChecked="{Binding SaveToFolder}"
             SelectedBG="Green"

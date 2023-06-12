@@ -15,6 +15,7 @@ namespace PhotoNotes.ViewModels
         public SavePhotoViewModel(IPhotoManagement photoManagement)
         {
             this.photoManagement = photoManagement;
+            
 
 
         }
@@ -23,74 +24,6 @@ namespace PhotoNotes.ViewModels
 
         [ObservableProperty]
 
-        /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
-        Before:
-                private string fileName;
-
-
-
-
-
-
-
-                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
-        After:
-                private string fileName;
-
-
-
-
-
-
-
-                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
-        */
-
-        /* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
-        Before:
-                private string fileName;
-
-
-
-
-
-
-
-                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
-        After:
-                private string fileName;
-
-
-
-
-
-
-
-                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
-        */
-
-        /* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
-        Before:
-                private string fileName;
-
-
-
-
-
-
-
-                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
-        After:
-                private string fileName;
-
-
-
-
-
-
-
-                public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();  
-        */
         private string fileName;
 
 
@@ -121,38 +54,7 @@ namespace PhotoNotes.ViewModels
                 await Shell.Current.DisplayAlert("Error", errMessage, "Ok");
                 return;
 
-                /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
-                Before:
-                            }
-
-                            OnPropertyChanged(nameof(FolderOptions));
-                After:
-                            }
-
-                            OnPropertyChanged(nameof(FolderOptions));
-                */
-
-                /* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
-                Before:
-                            }
-
-                            OnPropertyChanged(nameof(FolderOptions));
-                After:
-                            }
-
-                            OnPropertyChanged(nameof(FolderOptions));
-                */
-
-                /* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
-                Before:
-                            }
-
-                            OnPropertyChanged(nameof(FolderOptions));
-                After:
-                            }
-
-                            OnPropertyChanged(nameof(FolderOptions));
-                */
+                
             }
 
             OnPropertyChanged(nameof(FolderOptions));

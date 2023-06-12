@@ -150,7 +150,8 @@
 
     <ScrollView BackgroundColor="{AppThemeBinding Dark=Black, Light=White}">
         <VerticalStackLayout>
-            <HorizontalStackLayout>
+            <HorizontalStackLayout Margin="10,0,0,0">
+                
                 <SearchBar
                     x:Name="SearchBar"
                     Grid.Column="0"
@@ -168,9 +169,19 @@
                     Grid.Column="1"
                     Margin="2"
                     HorizontalOptions="End"
-                    IsEnabled="{Binding SearchCommand.IsRunning}"
-                    IsRunning="{Binding SearchCommand.IsRunning}"
+                    
+                    
                     IsVisible="{Binding SearchCommand.IsRunning}" />
+                <ImageButton
+                    Command="{Binding GoToSettingsCommand}"
+                    HeightRequest="30"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    WidthRequest="30">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="MaterialDesign" Color="{AppThemeBinding Dark=White, Light=Black}" Glyph="{x:Static fonts:IconFont.Tune}" />
+                    </ImageButton.Source>
+                </ImageButton>
             </HorizontalStackLayout>
 
 

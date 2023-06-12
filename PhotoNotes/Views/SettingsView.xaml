@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PhotoNotes.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:extensions="clr-namespace:PhotoNotes.Extensions"
+    Title="Preferences">
+    <ScrollView>
+
+        <VerticalStackLayout Padding="10">
+
+            <HorizontalStackLayout>
+                <Label FontSize="Medium" VerticalOptions="Center">Fuzzy String Match:</Label>
+                <CheckBox IsChecked="{Binding FuzzyStringMatch}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Label
+                    FontSize="Medium"
+                    IsEnabled="{Binding FuzzyStringMatch}"
+                    VerticalOptions="Center">
+                    Fuzzy String Match Threshold:
+                </Label>
+                <Entry
+                    FontSize="Medium"
+                    HorizontalTextAlignment="Center"
+                    IsEnabled="{Binding FuzzyStringMatch}"
+                    Keyboard="Numeric"
+                    Text="{Binding FuzzyStringMatchThreshold}"
+                    VerticalOptions="Center" />
+                <Label FontSize="Medium" VerticalOptions="Center">
+                    %
+                </Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Label FontSize="Medium" VerticalOptions="Center">Defauly To Saving To Folder:</Label>
+                <CheckBox IsChecked="{Binding SaveToFolder}" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

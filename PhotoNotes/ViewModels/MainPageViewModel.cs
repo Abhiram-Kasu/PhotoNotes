@@ -135,24 +135,50 @@ namespace PhotoNotes.ViewModels
         public async Task Search()
         {
             if(string.IsNullOrWhiteSpace(SearchText)) { return; }
+            if (Preferences.Default.Get(PreferencesService.FuzzyStringMatchKey, true))
+            {
+                var fuzzyStringMatchingThreshold = double.Parse(Preferences.Default.Get(PreferencesService.FuzzyStringMatchThresholdKey, "90.0"));
+                var t1 = Task.Run(() =>
+                {
+                    Folders = new(photoManagement.MainFolder.Folders.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold || x.Files.Any(y => Fuzz.PartialRatio(y.ShortName, SearchText) > fuzzyStringMatchingThreshold)));
+
+
+
+                });
+                var t2 = Task.Run(() =>
+                {
+                    Files = new(photoManagement.MainFolder.Files.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold));
+                    photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold).ForEach(Files.Add);
+
+
+
+                });
+
+                await Task.WhenAll(t1, t2);
+            }
+            else
+            {
+                var t1 = Task.Run(() =>
+                {
+                    Folders = new(photoManagement.MainFolder.Folders.Where(x => x.ShortName.Contains(SearchText) || x.Files.Any(y => y.ShortName.Contains(SearchText))));
+
+
+
+                });
+                var t2 = Task.Run(() =>
+                {
+                    Files = new(photoManagement.MainFolder.Files.Where(x => x.ShortName.Contains(SearchText)));
+                    photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => x.ShortName.Contains(SearchText)).ForEach(Files.Add);
+
+
+
+                });
+
+                await Task.WhenAll(t1, t2);
+            }
             
-            var t1 = Task.Run(() =>
-            {
-                Folders = new(photoManagement.MainFolder.Folders.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > 70 || x.Files.Any(y => Fuzz.PartialRatio(y.ShortName, SearchText) > 70)));
-                
-                
-
-            });
-            var t2 = Task.Run(() =>
-            {
-                Files = new(photoManagement.MainFolder.Files.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > 80));
-                photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > 70).ForEach(Files.Add);
-                
-
-
-            });
-
-            await Task.WhenAll(t1, t2);
+            
+            
             OnPropertyChanged(nameof(Folders));
             OnPropertyChanged(nameof(HasFolders));
             OnPropertyChanged(nameof(Files));
@@ -173,6 +199,9 @@ namespace PhotoNotes.ViewModels
 
 
         }
+
+        [RelayCommand]
+        public async Task GoToSettings() => await Shell.Current.GoToAsync(nameof(SettingsView), true);
 
 
     }

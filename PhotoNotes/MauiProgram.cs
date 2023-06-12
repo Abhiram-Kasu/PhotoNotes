@@ -23,7 +23,10 @@ public static class MauiProgram
         builder.Services.AddTransient<PhotoView>();
         builder.Services.AddTransient<FolderViewModel>();
         builder.Services.AddTransient<FolderView>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<SettingsView>();
         builder.Services.AddSingleton<IPhotoManagement, PhotoManagement>();
+        PreferencesService.Init();
 
 
         builder

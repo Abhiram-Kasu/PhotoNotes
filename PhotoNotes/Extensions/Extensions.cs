@@ -1,9 +1,13 @@
 ﻿
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PhotoNotes.Extensions
 {
-     public class ToggleButton : Button
+   
+
+    public class ToggleButton : Button
     {
         public bool IsChecked { 
             get => (bool)GetValue(IsCheckedProperty); 
@@ -12,6 +16,9 @@ namespace PhotoNotes.Extensions
         public static readonly BindableProperty IsCheckedProperty = BindableProperty.Create(nameof(IsChecked), typeof(bool), typeof(ToggleButton), false, BindingMode.TwoWay);
         public Color DefaultBG { get; set; }
         public Color SelectedBG { get; set; }
+
+        public void PerformClick() => SendClicked();
+
         public ToggleButton()
         {
             
@@ -21,8 +28,9 @@ namespace PhotoNotes.Extensions
                 IsChecked = !IsChecked;
                 BackgroundColor = BackgroundColor == DefaultBG ? SelectedBG : DefaultBG;
             };
-            
+
             DefaultBG = BackgroundColor;
+            
         }
     }
     
@@ -31,38 +39,7 @@ namespace PhotoNotes.Extensions
 
         public static void ForEach<T>(this IEnumerable<T> list, Action<T> func)
 
-        /* Unmerged change from project 'PhotoNotes (net7.0-ios)'
-        Before:
-                {
-
-                    foreach (var item in list)
-        After:
-                {
-
-                    foreach (var item in list)
-        */
-
-        /* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
-        Before:
-                {
-
-                    foreach (var item in list)
-        After:
-                {
-
-                    foreach (var item in list)
-        */
-
-        /* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
-        Before:
-                {
-
-                    foreach (var item in list)
-        After:
-                {
-
-                    foreach (var item in list)
-        */
+       
         {
 
             foreach (var item in list)
