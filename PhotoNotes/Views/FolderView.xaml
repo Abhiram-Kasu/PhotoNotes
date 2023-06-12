@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PhotoNotes.Models"
+             xmlns:fonts="using:PhotoNotes.Fonts"
+             xmlns:viewmodels="using:PhotoNotes.ViewModels"
+             x:Class="PhotoNotes.Views.FolderView"
+             Title="FolderView">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
+            <Border
+                Padding="10"
+                BackgroundColor="{AppThemeBinding Dark=Black,
+                                                  Light={StaticResource Tertiary}}"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0">
+                <Grid ColumnDefinitions="*, auto">
+                    <HorizontalStackLayout Grid.Column="0" Spacing="10">
+                        <Border
+                            HeightRequest="30"
+                            StrokeShape="RoundRectangle 5"
+                            StrokeThickness="0"
+                            WidthRequest="30">
+
+
+                            <Image
+                                Aspect="AspectFill"
+                                Source="{Binding Image}"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <Label
+                            FontSize="Body"
+                            Text="{Binding ShortName}"
+                            VerticalOptions="Center" />
+
+                    </HorizontalStackLayout>
+                    <ImageButton
+                        BackgroundColor="Transparent"
+                        Command="{Binding DeleteFileItemCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}"
+                        CommandParameter="{Binding CurrPath}"
+                        HeightRequest="30"
+                        HorizontalOptions="End"
+                        WidthRequest="30">
+                        <ImageButton.Source>
+                            <FontImageSource
+                                FontFamily="MaterialDesign"
+                                Glyph="{x:Static fonts:IconFont.Delete}"
+                                Color="Red" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup Name="CommonStates">
+                            <VisualState Name="Normal" />
+                            <VisualState Name="Selected">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                </Grid>
+            </Border>
+
+
+
+        </DataTemplate>
+
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout>
+            <Frame
+                Margin="5"
+                Padding="5"
+                BackgroundColor="{AppThemeBinding Dark=#04151F,
+                                                  Light={StaticResource Primary}}"
+                CornerRadius="5"
+                >
+
+                <Grid RowDefinitions="50, *">
+                    <HorizontalStackLayout Margin="5,0,5,0">
+                        <!--<ImageButton
+                            Margin="0,0,10,0"
+                            Command="{Binding BackToHomeCommand}"
+                            CornerRadius="5"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            IsVisible="{Binding ShowHomeButton}"
+                            WidthRequest="30">
+
+                            <ImageButton.Source>
+                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.ArrowLeft}" />
+                            </ImageButton.Source>
+                        </ImageButton>-->
+                        <Label
+                            FontSize="Medium"
+                            HorizontalOptions="Start"
+                            Text="{Binding Folder.ShortName}"
+                            VerticalOptions="Center" />
+
+                    </HorizontalStackLayout>
+
+                    <CollectionView
+                        Grid.Row="1"
+                        ItemTemplate="{StaticResource FileItemTemplate}"
+                        ItemsSource="{Binding Folder.Files}"
+                        SelectionChanged="FileCollectionView_SelectionChanged"
+                        SelectionMode="Single" />
+
+                </Grid>
+
+            </Frame>
+                
+        </VerticalStackLayout>
+    </ScrollView>
+    
+</ContentPage>

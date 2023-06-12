@@ -8,5 +8,6 @@ public partial class SavePhotoView : ContentPage
     {
         InitializeComponent();
         this.BindingContext = vm;
+        Loaded += (_,_) => FileNameEntry.Focus();
     }
 }

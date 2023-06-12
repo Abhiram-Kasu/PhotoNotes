@@ -59,10 +59,14 @@
 		<PackageReference Include="Camera.MAUI" Version="1.3.5" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+		<PackageReference Include="FuzzySharp" Version="2.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\FolderView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\PhotoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -12,11 +12,15 @@ public partial class MainPage : ContentPage
         this.BindingContext = m;
         viewModel = m;
         InitializeComponent();
+        SearchBar.TextChanged += (_,x) => viewModel.OnTextChanged(string.IsNullOrWhiteSpace(x.NewTextValue));
+        
+
 
 
 
     }
 
+  
 
     private async void TapGestureRecognizer_OnTapped(object sender, TappedEventArgs e)
     {
@@ -48,5 +52,6 @@ public partial class MainPage : ContentPage
 
     }
 
+    
 }
 

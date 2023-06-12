@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FuzzySharp;
 using PhotoNotes.Extensions;
 using PhotoNotes.Models;
 using PhotoNotes.Services;
@@ -21,7 +22,7 @@ namespace PhotoNotes.ViewModels
 
         public ObservableCollection<FileItem> Files { get; set; }
         public ObservableCollection<FolderItem> Folders { get; set; }
-        private static readonly ObservableCollection<FolderItem> EmptyFolderCollection = new (Enumerable.Empty<FolderItem>());
+        private static readonly ObservableCollection<FolderItem> EmptyFolderCollection = new(Enumerable.Empty<FolderItem>());
         private static readonly ObservableCollection<FileItem> EmptyFileCollection = new(Enumerable.Empty<FileItem>());
         public MainPageViewModel(IPhotoManagement photoManagement)
         {
@@ -40,9 +41,12 @@ namespace PhotoNotes.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(CurrTitle))]
         [NotifyPropertyChangedFor(nameof(ShowHomeButton))]
+        [NotifyPropertyChangedFor(nameof(IsOnHomeScreen))]
         private string? currFolder = null;
 
         public bool ShowHomeButton => CurrFolder is not null;
+
+        public bool IsOnHomeScreen => !ShowHomeButton;
 
         public string CurrTitle => CurrFolder ?? "Files";
 
@@ -61,16 +65,16 @@ namespace PhotoNotes.ViewModels
         public async Task DeleteFolderItem(string name)
         {
             var folder = Folders.First(x => x.CurrPath == name);
-            if(folder.NumFiles > 0)
+            if (folder.NumFiles > 0)
             {
-                if(!await Shell.Current.DisplayAlert("Warning", $"Are you sure you want to delete the nested {folder.NumFiles} inside this folder?", "Yes", "No"))
+                if (!await Shell.Current.DisplayAlert("Warning", $"Are you sure you want to delete the nested {folder.NumFiles} photo(s) inside this folder?", "Yes", "No"))
                 {
                     return;
                 }
             }
-            
+
             photoManagement.DeleteFolder(name);
-            
+
         }
         [RelayCommand]
         public void DeleteFileItem(string name)
@@ -92,7 +96,7 @@ namespace PhotoNotes.ViewModels
         [RelayCommand]
         public void SelectFolder(string name)
         {
-            
+
             var folder = Folders.Single(x => x.CurrPath == name);
             CurrFolder = folder.ShortName;
 
@@ -115,8 +119,58 @@ namespace PhotoNotes.ViewModels
             CurrFolder = null;
             Folders = photoManagement.MainFolder.Folders;
             OnPropertyChanged(nameof(Folders));
+            OnPropertyChanged(nameof(HasFolders));
             Files = photoManagement.MainFolder.Files;
             OnPropertyChanged(nameof(Files));
+            OnPropertyChanged(nameof(HasFiles));
+
+        }
+
+        [ObservableProperty]
+        private string _searchText;
+        
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        
+        public async Task Search()
+        {
+            if(string.IsNullOrWhiteSpace(SearchText)) { return; }
+            
+            var t1 = Task.Run(() =>
+            {
+                Folders = new(photoManagement.MainFolder.Folders.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > 70 || x.Files.Any(y => Fuzz.PartialRatio(y.ShortName, SearchText) > 70)));
+                
+                
+
+            });
+            var t2 = Task.Run(() =>
+            {
+                Files = new(photoManagement.MainFolder.Files.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > 80));
+                photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > 70).ForEach(Files.Add);
+                
+
+
+            });
+
+            await Task.WhenAll(t1, t2);
+            OnPropertyChanged(nameof(Folders));
+            OnPropertyChanged(nameof(HasFolders));
+            OnPropertyChanged(nameof(Files));
+            OnPropertyChanged(nameof(HasFiles));
+
+        }
+        [RelayCommand]
+        public void OnTextChanged(bool isEmpty)
+        {
+
+            if (isEmpty)
+            {
+                BackToMain();
+            }
+            
+
+
+
 
         }
 

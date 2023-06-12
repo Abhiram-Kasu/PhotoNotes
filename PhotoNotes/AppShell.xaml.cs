@@ -8,6 +8,7 @@ public partial class AppShell : Shell
     {
         Routing.RegisterRoute($"secret/{nameof(SavePhotoView)}", typeof(SavePhotoView));
         Routing.RegisterRoute($"secret/{nameof(PhotoView)}", typeof(PhotoView));
+        Routing.RegisterRoute($"{nameof(FolderView)}", typeof(FolderView));
         InitializeComponent();
 
 

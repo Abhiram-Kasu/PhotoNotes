@@ -6,7 +6,7 @@
     xmlns:extensions="clr-namespace:PhotoNotes.Extensions"
     xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels">
 
-    <VerticalStackLayout Padding="10" Spacing="5" BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark=Black}">
+    <VerticalStackLayout Padding="10" Spacing="5" BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
         <Label FontSize="Large">Save Options</Label>
 
         <extensions:ToggleButton
@@ -31,6 +31,7 @@
             </Grid>
             <Grid ColumnDefinitions="*,auto">
                 <Entry
+                    x:Name="FileNameEntry"
                     Grid.Column="0"
                     Margin="0,0,10,0"
                     HorizontalOptions="Fill"
