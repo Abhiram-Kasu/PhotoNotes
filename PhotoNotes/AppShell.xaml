@@ -18,7 +18,7 @@
         Route="MainPage" />
         </Tab>
         <Tab Title="Photo">
-            <ShellContent ContentTemplate="{DataTemplate views:PhotoPage}" Route="PhotoPage"/>
+            <ShellContent ContentTemplate="{DataTemplate views:PhotoPage}" Route="Photo{age"/>
         </Tab>
         
 

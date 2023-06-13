@@ -9,7 +9,7 @@ public partial class SavePhotoView : ContentPage
     {
         InitializeComponent();
         this.BindingContext = vm;
-        Loaded += (_,_) => FileNameEntry.Focus();
+        Loaded += (_, _) => FileNameEntry.Focus();
         Loaded += (_, _) =>
         {
             if (Preferences.Default.Get(PreferencesService.SaveToFolderKey, false))
@@ -17,8 +17,5 @@ public partial class SavePhotoView : ContentPage
                 SaveToFolderToggleButton.PerformClick();
             }
         };
-
     }
-
-   
 }

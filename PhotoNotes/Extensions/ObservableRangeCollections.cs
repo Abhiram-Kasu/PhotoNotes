@@ -4,54 +4,7 @@ using System.ComponentModel;
 
 namespace PhotoNotes.Extensions
 
-/* Unmerged change from project 'PhotoNotes (net7.0-ios)'
-Before:
 {
-    
-    
-
-    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
-After:
-{
-
-
-
-    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
-*/
-
-/* Unmerged change from project 'PhotoNotes (net7.0-maccatalyst)'
-Before:
-{
-    
-    
-
-    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
-After:
-{
-
-
-
-    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
-*/
-
-/* Unmerged change from project 'PhotoNotes (net7.0-windows10.0.19041.0)'
-Before:
-{
-    
-    
-
-    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
-After:
-{
-
-
-
-    public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
-*/
-{
-
-
-
     public class ObservableRangeCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
         private readonly List<T> _items;
@@ -64,6 +17,30 @@ After:
         public ObservableRangeCollection(IEnumerable<T> items)
         {
             _items = new List<T>(items);
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int Count => _items.Count;
+
+        public bool IsReadOnly => false;
+
+        public bool IsSynchronized => ((ICollection)_items).IsSynchronized;
+
+        public object SyncRoot => ((ICollection)_items).SyncRoot;
+
+        public T this[int index]
+        {
+            get => _items[index];
+            set => _items[index] = value;
+        }
+
+        public void Add(T item)
+        {
+            _items.Add(item);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, _items.Count - 1));
         }
 
         public void AddRange(IEnumerable<T> items)
@@ -84,22 +61,6 @@ After:
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, list, index));
         }
 
-        public T this[int index]
-        {
-            get => _items[index];
-            set => _items[index] = value;
-        }
-
-        public int Count => _items.Count;
-
-        public bool IsReadOnly => false;
-
-        public void Add(T item)
-        {
-            _items.Add(item);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, _items.Count - 1));
-        }
-
         public void Clear()
         {
             _items.Clear();
@@ -111,6 +72,8 @@ After:
         public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
 
         public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 
         public int IndexOf(T item) => _items.IndexOf(item);
 
@@ -133,13 +96,6 @@ After:
             return true;
         }
 
-        public void RemoveAt(int index)
-        {
-            var item = _items[index];
-            _items.RemoveAt(index);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-        }
-
         public void RemoveAll(Predicate<T> condition)
         {
             var list = new List<T>();
@@ -149,8 +105,13 @@ After:
                 return condition(x);
             });
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, list));
+        }
 
-
+        public void RemoveAt(int index)
+        {
+            var item = _items[index];
+            _items.RemoveAt(index);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
         }
 
         public void Sort(Comparison<T> comparison)
@@ -159,25 +120,14 @@ After:
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(this, e);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public object SyncRoot => ((ICollection)_items).SyncRoot;
-
-        public bool IsSynchronized => ((ICollection)_items).IsSynchronized;
-
-        IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
     }
-
 }

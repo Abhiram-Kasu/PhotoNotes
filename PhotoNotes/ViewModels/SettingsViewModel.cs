@@ -1,19 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhotoNotes.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhotoNotes.ViewModels
 {
     public partial class SettingsViewModel : ObservableObject
     {
-        
-        private readonly IPreferences preferences;
         private readonly IPhotoManagement photoManagement;
+        private readonly IPreferences preferences;
+        private bool _fuzzyStringMatch;
+
+        private double _fuzzyStringMatchThreshold;
+
+        private bool _saveToFolder;
+
         public SettingsViewModel(IPhotoManagement photoManagement)
         {
             preferences = Preferences.Default;
@@ -24,18 +24,12 @@ namespace PhotoNotes.ViewModels
             this.photoManagement = photoManagement;
         }
 
-        private bool _saveToFolder;
-        public bool SaveToFolder
-        {
-            get => _saveToFolder;
-            set 
-            {
-                SetProperty(ref _saveToFolder, value);
-                preferences.Set(PreferencesService.SaveToFolderKey, value);
-            }
-        }
+        public bool CanClearTMPFolder => photoManagement.TMPFolderSize > 0;
 
-        private bool _fuzzyStringMatch;
+        public Color ClearTMPButtonBackgroundColor => CanClearTMPFolder ? Colors.Red : Colors.Gray;
+
+        public string ClearTMPFolderText => $"Clear {Math.Round(photoManagement.TMPFolderSize / 1e+6, 2)} mb from TMP folder";
+
         public bool FuzzyStringMatch
         {
             get => _fuzzyStringMatch;
@@ -45,7 +39,7 @@ namespace PhotoNotes.ViewModels
                 preferences.Set(PreferencesService.FuzzyStringMatchKey, value);
             }
         }
-        private double _fuzzyStringMatchThreshold;
+
         public double FuzzyStringMatchThreshold
         {
             get => _fuzzyStringMatchThreshold;
@@ -56,10 +50,16 @@ namespace PhotoNotes.ViewModels
             }
         }
 
-        public string ClearTMPFolderText => $"Clear {Math.Round(photoManagement.TMPFolderSize / 1e+6, 2)} mb from TMP folder";
-        public bool CanClearTMPFolder => photoManagement.TMPFolderSize > 0;
+        public bool SaveToFolder
+        {
+            get => _saveToFolder;
+            set
+            {
+                SetProperty(ref _saveToFolder, value);
+                preferences.Set(PreferencesService.SaveToFolderKey, value);
+            }
+        }
 
-        public Color ClearTMPButtonBackgroundColor => CanClearTMPFolder ? Colors.Red : Colors.Gray;
         [RelayCommand]
         public void ClearTMP()
         {

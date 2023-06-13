@@ -128,13 +128,13 @@ namespace PhotoNotes.ViewModels
 
         [ObservableProperty]
         private string _searchText;
-        
+
 
         [RelayCommand(AllowConcurrentExecutions = true)]
-        
+
         public async Task Search()
         {
-            if(string.IsNullOrWhiteSpace(SearchText)) { return; }
+            if (string.IsNullOrWhiteSpace(SearchText)) { return; }
             if (Preferences.Default.Get(PreferencesService.FuzzyStringMatchKey, true))
             {
                 var fuzzyStringMatchingThreshold = double.Parse(Preferences.Default.Get(PreferencesService.FuzzyStringMatchThresholdKey, "90.0"));
@@ -176,9 +176,9 @@ namespace PhotoNotes.ViewModels
 
                 await Task.WhenAll(t1, t2);
             }
-            
-            
-            
+
+
+
             OnPropertyChanged(nameof(Folders));
             OnPropertyChanged(nameof(HasFolders));
             OnPropertyChanged(nameof(Files));
@@ -193,7 +193,7 @@ namespace PhotoNotes.ViewModels
             {
                 BackToMain();
             }
-            
+
 
 
 
@@ -202,6 +202,7 @@ namespace PhotoNotes.ViewModels
 
         [RelayCommand]
         public async Task GoToSettings() => await Shell.Current.GoToAsync(nameof(SettingsView), true);
+
 
 
     }

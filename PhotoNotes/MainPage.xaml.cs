@@ -5,31 +5,15 @@ namespace PhotoNotes;
 
 public partial class MainPage : ContentPage
 {
-    int initial = 0;
     private readonly MainPageViewModel viewModel;
+    private int initial = 0;
+
     public MainPage(MainPageViewModel m)
     {
         this.BindingContext = m;
         viewModel = m;
         InitializeComponent();
-        SearchBar.TextChanged += (_,x) => viewModel.OnTextChanged(string.IsNullOrWhiteSpace(x.NewTextValue));
-        
-
-
-
-
-    }
-
-  
-
-    private async void TapGestureRecognizer_OnTapped(object sender, TappedEventArgs e)
-    {
-        await Shell.Current.DisplayAlert("Clicked", "Ya Clicked", "ok");
-    }
-
-    private async void MenuItem_OnClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.DisplayAlert("Clicked", "Ya Clicked", "ok");
+        SearchBar.TextChanged += (_, x) => viewModel.OnTextChanged(string.IsNullOrWhiteSpace(x.NewTextValue));
     }
 
     private async void FileCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -49,9 +33,15 @@ public partial class MainPage : ContentPage
         (sender as CollectionView).SelectedItem = null;
 
         viewModel.SelectFolder(currName);
-
     }
 
-    
-}
+    private async void MenuItem_OnClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.DisplayAlert("Clicked", "Ya Clicked", "ok");
+    }
 
+    private async void TapGestureRecognizer_OnTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.DisplayAlert("Clicked", "Ya Clicked", "ok");
+    }
+}

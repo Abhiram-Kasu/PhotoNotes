@@ -5,12 +5,13 @@ namespace PhotoNotes.Views;
 
 public partial class FolderView : ContentPage
 {
-	private readonly FolderViewModel viewModel;
-	public FolderView(FolderViewModel vm)
-	{
-		this.BindingContext = viewModel = vm;
-		InitializeComponent();
-	}
+    private readonly FolderViewModel viewModel;
+
+    public FolderView(FolderViewModel vm)
+    {
+        this.BindingContext = viewModel = vm;
+        InitializeComponent();
+    }
 
     private async void FileCollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -19,10 +20,5 @@ public partial class FolderView : ContentPage
         await viewModel.SelectFile((e.CurrentSelection[0] as FileItem).CurrPath);
         (sender as CollectionView).SelectedItems.Clear();
         (sender as CollectionView).SelectedItem = null;
-
-        
-        
     }
-
-    
 }

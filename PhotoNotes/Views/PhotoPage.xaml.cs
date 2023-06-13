@@ -5,10 +5,10 @@ namespace PhotoNotes.Views;
 
 public partial class PhotoPage : ContentPage
 {
-    bool loaded = false;
+    private bool loaded = false;
+
     public PhotoPage()
     {
-
         InitializeComponent();
     }
 
@@ -16,7 +16,6 @@ public partial class PhotoPage : ContentPage
     {
         if (cameraView.NumCamerasDetected > 0)
         {
-
             cameraView.Camera = cameraView.Cameras.First();
             cameraView.AutoStartPreview = true;
             MainThread.BeginInvokeOnMainThread(async () =>
@@ -27,8 +26,6 @@ public partial class PhotoPage : ContentPage
                 loaded = true;
                 await Shell.Current.GoToAsync($"//{nameof(PhotoPage)}", animate: false);
                 Shell.Current.ToolbarItems.Clear();
-
-
             });
         }
     }
@@ -37,25 +34,19 @@ public partial class PhotoPage : ContentPage
     {
         base.OnDisappearing();
         var res = MainThread.InvokeOnMainThreadAsync(() => cameraView.StopCameraAsync());
-
-
     }
 
     protected override void OnAppearing()
     {
-
         base.OnAppearing();
         if (loaded)
         {
             var res = MainThread.InvokeOnMainThreadAsync(() => cameraView.StartCameraAsync());
         }
-
     }
-
 
     private void PictureButton_Clicked(object sender, EventArgs e)
     {
-
         _ = MainThread.InvokeOnMainThreadAsync(async () =>
         {
             string fileName = DateTime.Now.Ticks.ToString();
@@ -64,7 +55,6 @@ public partial class PhotoPage : ContentPage
             string snapFilePath = Path.Combine(IPhotoManagement.TempPath, fileName);
             await cameraView.SaveSnapShot(Camera.MAUI.ImageFormat.PNG, snapFilePath);
             await Shell.Current.GoToAsync($"secret/{nameof(SavePhotoView)}?{nameof(SavePhotoViewModel.TempFilePath)}={snapFilePath}");
-
         });
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PhotoNotes.Services;
 
@@ -8,36 +7,26 @@ namespace PhotoNotes.ViewModels
     [QueryProperty(nameof(TempFilePath), nameof(TempFilePath))]
     public partial class SavePhotoViewModel : ObservableObject
     {
-
-        public string TempFilePath { get; set; }
-
         private readonly IPhotoManagement photoManagement;
-        public SavePhotoViewModel(IPhotoManagement photoManagement)
-        {
-            this.photoManagement = photoManagement;
-            
-
-
-        }
-        [ObservableProperty]
-        private bool saveToFolder;
-
-        [ObservableProperty]
-
-        private string fileName;
-
-
-
-
-
-
-
-        public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();
-
-        public IList<string> FolderOptionsShort => photoManagement.MainFolder.Folders.Select(x => x.ShortName).ToList();
 
         [ObservableProperty]
         private int _selectedIndex = -1;
+
+        [ObservableProperty]
+        private string fileName;
+
+        [ObservableProperty]
+        private bool saveToFolder;
+
+        public SavePhotoViewModel(IPhotoManagement photoManagement)
+        {
+            this.photoManagement = photoManagement;
+        }
+
+        public IList<string> FolderOptions => photoManagement.MainFolder.Folders.Select(x => x.Name).ToList();
+        public IList<string> FolderOptionsShort => photoManagement.MainFolder.Folders.Select(x => x.ShortName).ToList();
+        public string TempFilePath { get; set; }
+
         [RelayCommand]
         public async Task CreateNewFolder()
         {
@@ -53,19 +42,16 @@ namespace PhotoNotes.ViewModels
             {
                 await Shell.Current.DisplayAlert("Error", errMessage, "Ok");
                 return;
-
-                
             }
 
             OnPropertyChanged(nameof(FolderOptions));
             OnPropertyChanged(nameof(FolderOptionsShort));
             SelectedIndex = FolderOptionsShort.IndexOf(folderName);
-
         }
+
         [RelayCommand]
         public async Task Save()
         {
-
             if (FileName is null)
             {
                 await Shell.Current.DisplayAlert("Error", "File Name cannot be empty!", "Ok");
@@ -93,10 +79,7 @@ namespace PhotoNotes.ViewModels
                     return;
                 }
 
-
-
                 await Shell.Current.GoToAsync($"../");
-
             }
             else
             {
@@ -113,17 +96,8 @@ namespace PhotoNotes.ViewModels
                     return;
                 }
 
-
                 await Shell.Current.GoToAsync($"../");
-
             }
-
-
-
-
         }
-
-
-
     }
 }

@@ -19,28 +19,21 @@ namespace PhotoNotes.ViewModels
         public FolderViewModel(IPhotoManagement pm)
         {
             photoManagement = pm;
-            
         }
-
 
         public FolderItem Folder { get; set; }
 
         [RelayCommand]
         public void DeleteFileItem(string name)
         {
-            
-            
             photoManagement.DeleteFile(Folder.ShortName, name);
-            
-
-
         }
+
         [RelayCommand]
         public async Task SelectFile(string name)
         {
-            //TODO 
+            //TODO
             await Shell.Current.GoToAsync($"secret/{nameof(PhotoView)}?{nameof(PhotoViewModel.PhotoSource)}={name}");
         }
-
     }
 }
