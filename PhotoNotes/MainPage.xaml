@@ -36,7 +36,6 @@
                             <Image.Source>
                                 <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" />
                             </Image.Source>
-
                         </Image>
                         <Label
                             FontSize="Body"
@@ -62,12 +61,8 @@
                                 Glyph="{x:Static fonts:IconFont.Delete}"
                                 Color="Red" />
                         </ImageButton.Source>
-
                     </ImageButton>
-
-
                 </Grid>
-
 
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">
@@ -82,11 +77,9 @@
                                 <Setter Property="BackgroundColor" Value="White" />
                             </VisualState.Setters>
                         </VisualState>
-
                     </VisualStateGroup>
                 </VisualStateManager.VisualStateGroups>
             </Border>
-
         </DataTemplate>
         <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
             <Border
@@ -103,7 +96,6 @@
                             StrokeThickness="0"
                             WidthRequest="30">
 
-
                             <Image
                                 Aspect="AspectFill"
                                 Source="{Binding Image}"
@@ -113,7 +105,6 @@
                             FontSize="Body"
                             Text="{Binding ShortName}"
                             VerticalOptions="Center" />
-
                     </HorizontalStackLayout>
                     <ImageButton
                         BackgroundColor="Transparent"
@@ -137,14 +128,10 @@
                                     <Setter Property="BackgroundColor" Value="Transparent" />
                                 </VisualState.Setters>
                             </VisualState>
-
                         </VisualStateGroup>
                     </VisualStateManager.VisualStateGroups>
                 </Grid>
             </Border>
-
-
-
         </DataTemplate>
     </ContentPage.Resources>
 
@@ -187,9 +174,6 @@
                 </ImageButton>
             </HorizontalStackLayout>
 
-
-
-
             <Frame
                 Margin="5"
                 Padding="5"
@@ -210,7 +194,6 @@
                         SelectionChanged="FolderCollectionView_SelectionChanged"
                         SelectionMode="Single" />
                 </Grid>
-
             </Frame>
             <Frame
                 Margin="5"
@@ -240,7 +223,6 @@
                             HorizontalOptions="Start"
                             Text="{Binding CurrTitle}"
                             VerticalOptions="Center" />
-
                     </HorizontalStackLayout>
 
                     <CollectionView
@@ -249,18 +231,8 @@
                         ItemsSource="{Binding Files}"
                         SelectionChanged="FileCollectionView_SelectionChanged"
                         SelectionMode="Single" />
-
                 </Grid>
-
             </Frame>
-
         </VerticalStackLayout>
     </ScrollView>
-
-
-
-
-
-
-
 </ContentPage>

@@ -11,44 +11,39 @@ namespace PhotoNotes.ViewModels
 {
     public partial class MainPageViewModel : ObservableObject
     {
-
+        private static readonly ObservableCollection<FileItem> EmptyFileCollection = new(Enumerable.Empty<FileItem>());
+        private static readonly ObservableCollection<FolderItem> EmptyFolderCollection = new(Enumerable.Empty<FolderItem>());
         private readonly IPhotoManagement photoManagement;
+
         [ObservableProperty]
         private bool _isBusy;
 
-        public bool HasFiles => Files.Any();
+        [ObservableProperty]
+        private string _searchText;
 
-        public bool HasFolders => Folders.Any();
-
-        public ObservableCollection<FileItem> Files { get; set; }
-        public ObservableCollection<FolderItem> Folders { get; set; }
-        private static readonly ObservableCollection<FolderItem> EmptyFolderCollection = new(Enumerable.Empty<FolderItem>());
-        private static readonly ObservableCollection<FileItem> EmptyFileCollection = new(Enumerable.Empty<FileItem>());
-        public MainPageViewModel(IPhotoManagement photoManagement)
-        {
-
-            this.photoManagement = photoManagement;
-            (Folders, Files) = (photoManagement.MainFolder.Folders, photoManagement.MainFolder.Files);
-
-
-            Files.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFiles));
-            Folders.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFolders));
-
-
-
-
-        }
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(CurrTitle))]
         [NotifyPropertyChangedFor(nameof(ShowHomeButton))]
         [NotifyPropertyChangedFor(nameof(IsOnHomeScreen))]
         private string? currFolder = null;
 
-        public bool ShowHomeButton => CurrFolder is not null;
+        public MainPageViewModel(IPhotoManagement photoManagement)
+        {
+            this.photoManagement = photoManagement;
+            (Folders, Files) = (photoManagement.MainFolder.Folders, photoManagement.MainFolder.Files);
 
-        public bool IsOnHomeScreen => !ShowHomeButton;
+            Files.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFiles));
+            Folders.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFolders));
+        }
 
         public string CurrTitle => CurrFolder ?? "Files";
+        public ObservableCollection<FileItem> Files { get; set; }
+        public ObservableCollection<FolderItem> Folders { get; set; }
+        public bool HasFiles => Files.Any();
+
+        public bool HasFolders => Folders.Any();
+        public bool IsOnHomeScreen => !ShowHomeButton;
+        public bool ShowHomeButton => CurrFolder is not null;
 
         [RelayCommand]
         public void BackToHome()
@@ -59,6 +54,32 @@ namespace PhotoNotes.ViewModels
             OnPropertyChanged(nameof(Files));
             OnPropertyChanged(nameof(HasFolders));
             OnPropertyChanged(nameof(HasFiles));
+        }
+
+        [RelayCommand]
+        public void BackToMain()
+        {
+            CurrFolder = null;
+            Folders = photoManagement.MainFolder.Folders;
+            OnPropertyChanged(nameof(Folders));
+            OnPropertyChanged(nameof(HasFolders));
+            Files = photoManagement.MainFolder.Files;
+            OnPropertyChanged(nameof(Files));
+            OnPropertyChanged(nameof(HasFiles));
+        }
+
+        [RelayCommand]
+        public void DeleteFileItem(string name)
+        {
+            if (CurrFolder is null)
+            {
+                photoManagement.DeleteFile(null, name);
+            }
+            else
+            {
+                photoManagement.DeleteFile(CurrFolder, name);
+            }
+            //Files.RemoveAll(x => x.CurrPath == name);
         }
 
         [RelayCommand]
@@ -74,64 +95,21 @@ namespace PhotoNotes.ViewModels
             }
 
             photoManagement.DeleteFolder(name);
-
         }
+
         [RelayCommand]
-        public void DeleteFileItem(string name)
+        public async Task GoToSettings() => await Shell.Current.GoToAsync(nameof(SettingsView), true);
+
+        [RelayCommand]
+        public void OnTextChanged(bool isEmpty)
         {
-            if (CurrFolder is null)
+            if (isEmpty)
             {
-                photoManagement.DeleteFile(null, name);
-
+                BackToMain();
             }
-            else
-            {
-                photoManagement.DeleteFile(CurrFolder, name);
-            }
-            //Files.RemoveAll(x => x.CurrPath == name);
-
-
         }
-
-        [RelayCommand]
-        public void SelectFolder(string name)
-        {
-
-            var folder = Folders.Single(x => x.CurrPath == name);
-            CurrFolder = folder.ShortName;
-
-            Files = folder.Files;
-            Folders = EmptyFolderCollection;
-
-            OnPropertyChanged(nameof(HasFolders));
-            OnPropertyChanged(nameof(Files));
-
-        }
-        [RelayCommand]
-        public async Task SelectFile(string name)
-        {
-            //TODO 
-            await Shell.Current.GoToAsync($"secret/{nameof(PhotoView)}?{nameof(PhotoViewModel.PhotoSource)}={name}");
-        }
-        [RelayCommand]
-        public void BackToMain()
-        {
-            CurrFolder = null;
-            Folders = photoManagement.MainFolder.Folders;
-            OnPropertyChanged(nameof(Folders));
-            OnPropertyChanged(nameof(HasFolders));
-            Files = photoManagement.MainFolder.Files;
-            OnPropertyChanged(nameof(Files));
-            OnPropertyChanged(nameof(HasFiles));
-
-        }
-
-        [ObservableProperty]
-        private string _searchText;
-
 
         [RelayCommand(AllowConcurrentExecutions = true)]
-
         public async Task Search()
         {
             if (string.IsNullOrWhiteSpace(SearchText)) { return; }
@@ -141,17 +119,11 @@ namespace PhotoNotes.ViewModels
                 var t1 = Task.Run(() =>
                 {
                     Folders = new(photoManagement.MainFolder.Folders.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold || x.Files.Any(y => Fuzz.PartialRatio(y.ShortName, SearchText) > fuzzyStringMatchingThreshold)));
-
-
-
                 });
                 var t2 = Task.Run(() =>
                 {
                     Files = new(photoManagement.MainFolder.Files.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold));
                     photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold).ForEach(Files.Add);
-
-
-
                 });
 
                 await Task.WhenAll(t1, t2);
@@ -161,49 +133,40 @@ namespace PhotoNotes.ViewModels
                 var t1 = Task.Run(() =>
                 {
                     Folders = new(photoManagement.MainFolder.Folders.Where(x => x.ShortName.Contains(SearchText) || x.Files.Any(y => y.ShortName.Contains(SearchText))));
-
-
-
                 });
                 var t2 = Task.Run(() =>
                 {
                     Files = new(photoManagement.MainFolder.Files.Where(x => x.ShortName.Contains(SearchText)));
                     photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => x.ShortName.Contains(SearchText)).ForEach(Files.Add);
-
-
-
                 });
 
                 await Task.WhenAll(t1, t2);
             }
 
-
-
             OnPropertyChanged(nameof(Folders));
             OnPropertyChanged(nameof(HasFolders));
             OnPropertyChanged(nameof(Files));
             OnPropertyChanged(nameof(HasFiles));
-
         }
+
         [RelayCommand]
-        public void OnTextChanged(bool isEmpty)
+        public async Task SelectFile(string name)
         {
-
-            if (isEmpty)
-            {
-                BackToMain();
-            }
-
-
-
-
-
+            //TODO
+            await Shell.Current.GoToAsync($"secret/{nameof(PhotoView)}?{nameof(PhotoViewModel.PhotoSource)}={name}");
         }
 
         [RelayCommand]
-        public async Task GoToSettings() => await Shell.Current.GoToAsync(nameof(SettingsView), true);
+        public void SelectFolder(string name)
+        {
+            var folder = Folders.Single(x => x.CurrPath == name);
+            CurrFolder = folder.ShortName;
 
+            Files = folder.Files;
+            Folders = EmptyFolderCollection;
 
-
+            OnPropertyChanged(nameof(HasFolders));
+            OnPropertyChanged(nameof(Files));
+        }
     }
 }
