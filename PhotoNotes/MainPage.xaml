@@ -54,43 +54,65 @@
                                                   Light={StaticResource Tertiary}}"
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="0">
-                <Grid ColumnDefinitions="*, auto ">
-                    <HorizontalStackLayout Grid.Column="0" Spacing="10">
-                        <Image
-                            HeightRequest="30"
-                            VerticalOptions="Center"
-                            WidthRequest="30">
-                            <Image.Source>
-                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" />
-                            </Image.Source>
-                        </Image>
-                        <Label
-                            FontSize="Body"
-                            Text="{Binding ShortName}"
-                            VerticalOptions="Center" />
-                        <Label
-                            FontSize="Body"
-                            Text="{Binding NumFiles}"
-                            TextColor="DarkSlateGrey"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
+                <Grid>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectFolderCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}" CommandParameter="{Binding CurrPath}" />
+                    </Grid.GestureRecognizers>
+                    <SwipeView>
 
-                    <ImageButton
-                        BackgroundColor="Transparent"
-                        Command="{Binding DeleteFolderItemCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}"
-                        CommandParameter="{Binding CurrPath}"
-                        HeightRequest="30"
-                        HorizontalOptions="End"
-                        WidthRequest="30">
-                        <ImageButton.Source>
-                            <FontImageSource
-                                FontFamily="MaterialDesign"
-                                Glyph="{x:Static fonts:IconFont.Delete}"
-                                Color="Red" />
-                        </ImageButton.Source>
-                    </ImageButton>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItem
+                                    Command="{Binding DeleteFolderItemCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}"
+                                    CommandParameter="{Binding CurrPath}"
+                                    Text="Delete">
+                                    <SwipeItem.IconImageSource>
+                                        <FontImageSource
+                                            FontFamily="MaterialDesign"
+                                            Glyph="{x:Static fonts:IconFont.Delete}"
+                                            Color="Red" />
+                                    </SwipeItem.IconImageSource>
+                                </SwipeItem>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Grid ColumnDefinitions="*, auto ">
+                            <HorizontalStackLayout Grid.Column="0" Spacing="10">
+                                <Image
+                                    HeightRequest="30"
+                                    VerticalOptions="Center"
+                                    WidthRequest="30">
+                                    <Image.Source>
+                                        <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.Folder}" />
+                                    </Image.Source>
+                                </Image>
+                                <Label
+                                    FontSize="Body"
+                                    Text="{Binding ShortName}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    FontSize="Body"
+                                    Text="{Binding NumFiles}"
+                                    TextColor="DarkSlateGrey"
+                                    VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
+                            <ImageButton
+                                BackgroundColor="Transparent"
+                                Command="{Binding DeleteFolderItemCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}"
+                                CommandParameter="{Binding CurrPath}"
+                                HeightRequest="30"
+                                HorizontalOptions="End"
+                                WidthRequest="30">
+                                <ImageButton.Source>
+                                    <FontImageSource
+                                        FontFamily="MaterialDesign"
+                                        Glyph="{x:Static fonts:IconFont.Delete}"
+                                        Color="Red" />
+                                </ImageButton.Source>
+                            </ImageButton>
+                        </Grid>
+                    </SwipeView>
                 </Grid>
-
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">
                         <VisualState Name="Normal" />
@@ -169,15 +191,14 @@
                 <Entry
                     x:Name="SearchBar"
                     Grid.Column="0"
+                    Completed="SearchBar_Completed"
                     Placeholder="Search for an item here:"
                     ReturnCommand="{Binding SearchCommand}"
-                    Completed="SearchBar_Completed"
                     Text="{Binding SearchText}">
                     <Entry.Behaviors>
                         <toolkit:UserStoppedTypingBehavior
                             Command="{Binding SearchCommand}"
                             ShouldDismissKeyboardAutomatically="False"
-
                             StoppedTypingTimeThreshold="750" />
                     </Entry.Behaviors>
                 </Entry>

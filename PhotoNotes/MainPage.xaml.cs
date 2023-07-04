@@ -43,7 +43,7 @@ public partial class MainPage : ContentPage
         if (e.CurrentSelection.Count == 0) return;
 
         var currName = (e.CurrentSelection[0] as FolderItem).CurrPath;
-        await viewModel.SelectFolder(currName);
+        //await viewModel.SelectFolder(currName);
         (sender as CollectionView).SelectedItems.Clear();
         (sender as CollectionView).SelectedItem = null;
     }
