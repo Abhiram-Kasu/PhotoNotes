@@ -55,6 +55,9 @@
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="0">
                 <Grid ColumnDefinitions="*, auto ">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectFolderCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}" CommandParameter="{Binding CurrPath}" />
+                    </Grid.GestureRecognizers>
                     <HorizontalStackLayout Grid.Column="0" Spacing="10">
                         <Image
                             HeightRequest="30"
@@ -111,6 +114,9 @@
                 StrokeShape="RoundRectangle 10"
                 StrokeThickness="0">
                 <Grid ColumnDefinitions="*, auto">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectFileCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}}" CommandParameter="{Binding CurrPath}" />
+                    </Grid.GestureRecognizers>
                     <HorizontalStackLayout Grid.Column="0" Spacing="10">
                         <Border
                             HeightRequest="30"
@@ -169,15 +175,14 @@
                 <Entry
                     x:Name="SearchBar"
                     Grid.Column="0"
+                    Completed="SearchBar_Completed"
                     Placeholder="Search for an item here:"
                     ReturnCommand="{Binding SearchCommand}"
-                    Completed="SearchBar_Completed"
                     Text="{Binding SearchText}">
                     <Entry.Behaviors>
                         <toolkit:UserStoppedTypingBehavior
                             Command="{Binding SearchCommand}"
                             ShouldDismissKeyboardAutomatically="False"
-
                             StoppedTypingTimeThreshold="750" />
                     </Entry.Behaviors>
                 </Entry>
@@ -208,8 +213,7 @@
                                 Grid.Row="1"
                                 ItemTemplate="{StaticResource FolderItemTemplate}"
                                 ItemsSource="{Binding Folders}"
-                                SelectionChanged="FolderCollectionView_SelectionChanged"
-                                SelectionMode="Single" />
+                                SelectionMode="None" />
                         </Grid>
                     </Frame>
                     <Frame
@@ -246,8 +250,7 @@
                                 Grid.Row="1"
                                 ItemTemplate="{StaticResource FileItemTemplate}"
                                 ItemsSource="{Binding Files}"
-                                SelectionChanged="FileCollectionView_SelectionChanged"
-                                SelectionMode="Single" />
+                                SelectionMode="None" />
                         </Grid>
                     </Frame>
                 </VerticalStackLayout>
