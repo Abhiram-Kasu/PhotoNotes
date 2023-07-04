@@ -53,7 +53,14 @@ public partial class PhotoPage : ContentPage
             fileName += ".png";
 
             string snapFilePath = Path.Combine(IPhotoManagement.TempPath, fileName);
-            await cameraView.SaveSnapShot(Camera.MAUI.ImageFormat.PNG, snapFilePath);
+            var (originalWidth, originalHeight) = (cameraView.Width, cameraView.Height);
+            var task = cameraView.SaveSnapShot(Camera.MAUI.ImageFormat.PNG, snapFilePath);
+
+            
+
+            await BoundingFrame.ScaleTo(.95, easing: Easing.CubicInOut);
+            await task;
+            await BoundingFrame.ScaleTo(1, easing: Easing.CubicInOut);
             await Shell.Current.GoToAsync($"secret/{nameof(SavePhotoView)}?{nameof(SavePhotoViewModel.TempFilePath)}={snapFilePath}");
         });
     }

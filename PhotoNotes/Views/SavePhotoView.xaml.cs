@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Core.Platform;
 using PhotoNotes.Services;
 using PhotoNotes.ViewModels;
 
@@ -17,5 +18,10 @@ public partial class SavePhotoView : ContentPage
                 SaveToFolderToggleButton.PerformClick();
             }
         };
+    }
+
+    private async void SaveButton_Clicked(object sender, EventArgs e)
+    {
+        await FileNameEntry.HideKeyboardAsync(new CancellationToken());
     }
 }

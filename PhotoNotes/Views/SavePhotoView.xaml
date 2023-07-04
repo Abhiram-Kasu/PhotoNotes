@@ -42,6 +42,8 @@
                     Grid.Column="1"
                     Command="{Binding SaveCommand}"
                     HorizontalOptions="End"
+                    x:Name="SaveButton"
+                    Clicked="SaveButton_Clicked"
                     Text="Save" />
             </Grid>
         </VerticalStackLayout>

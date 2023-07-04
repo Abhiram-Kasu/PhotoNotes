@@ -1,23 +1,44 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
-             xmlns:font="clr-namespace:PhotoNotes.Fonts"
-             x:Class="PhotoNotes.Views.PhotoPage"
-             >
+<ContentPage
+    x:Class="PhotoNotes.Views.PhotoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+    xmlns:font="clr-namespace:PhotoNotes.Fonts">
     <ContentPage.Resources>
         <x:String x:Key="HollowCircleIcon">&#xF96F;</x:String>
     </ContentPage.Resources>
-    
-    
-    <Grid RowDefinitions="2*, *" VerticalOptions="Fill" HorizontalOptions="Fill">
-        <cv:CameraView Grid.RowSpan="2"  x:Name="cameraView" CamerasLoaded="cameraView_CamerasLoaded" AutoStartPreview="True"  />
-        <ImageButton BackgroundColor="Transparent" Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center"  x:Name="PictureButton" Clicked="PictureButton_Clicked">
-            <ImageButton.Source>
-                <FontImageSource  Size="75" FontFamily="MaterialDesign" Glyph="{x:Static font:IconFont.CheckboxBlankCircleOutline}"/>
-            </ImageButton.Source>
-        </ImageButton>
-    </Grid>
-        
-    
+
+    <Frame
+        x:Name="BoundingFrame"
+        Margin="0,10,0,0"
+        Padding="0"
+        BackgroundColor="Transparent"
+        CornerRadius="15">
+
+        <Grid
+            HorizontalOptions="Fill"
+            RowDefinitions="2*, *"
+            VerticalOptions="Fill">
+            <cv:CameraView
+                x:Name="cameraView"
+                Grid.RowSpan="2"
+                AutoStartPreview="True"
+                CamerasLoaded="cameraView_CamerasLoaded" />
+            <ImageButton
+                x:Name="PictureButton"
+                Grid.Row="1"
+                BackgroundColor="Transparent"
+                Clicked="PictureButton_Clicked"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="MaterialDesign"
+                        Glyph="{x:Static font:IconFont.CheckboxBlankCircleOutline}"
+                        Size="75" />
+                </ImageButton.Source>
+            </ImageButton>
+        </Grid>
+    </Frame>
 </ContentPage>
