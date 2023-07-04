@@ -5,6 +5,7 @@ using PhotoNotes.Extensions;
 using PhotoNotes.Models;
 using PhotoNotes.Services;
 using PhotoNotes.Views;
+using System.Collections;
 using System.Collections.ObjectModel;
 
 namespace PhotoNotes.ViewModels
@@ -34,7 +35,24 @@ namespace PhotoNotes.ViewModels
 
             Files.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFiles));
             Folders.CollectionChanged += (_, e) => OnPropertyChanged(nameof(HasFolders));
+
+            var callBack = new CollectionSynchronizationCallback(static (IEnumerable collection, object context, Action accessMethod, bool writeAccess) =>
+            {
+                lock (context)
+                {
+                    accessMethod?.Invoke();
+                }
+            });
+
+            //BindingBase.EnableCollectionSynchronization(Files, null, callBack);
+            //BindingBase.EnableCollectionSynchronization(Folders, null, callBack);
+            //BindingBase.EnableCollectionSynchronization(EmptyFolderCollection, null, callBack);
+            //BindingBase.EnableCollectionSynchronization(EmptyFileCollection, null, callBack);
         }
+        //Search Bar Bug Workaround
+        #region Search Bar Bug Workaround
+        public double ScreenWidth => DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density;
+        #endregion
 
         public string CurrTitle => CurrFolder ?? "Files";
         public ObservableCollection<FileItem> Files { get; set; }
@@ -50,6 +68,8 @@ namespace PhotoNotes.ViewModels
         {
             Folders = photoManagement.MainFolder.Folders;
             Files = photoManagement.MainFolder.Files;
+            EmptyFileCollection.Clear();
+            EmptyFolderCollection.Clear();
             CurrFolder = null;
             OnPropertyChanged(nameof(Files));
             OnPropertyChanged(nameof(HasFolders));
@@ -113,16 +133,20 @@ namespace PhotoNotes.ViewModels
         public async Task Search()
         {
             if (string.IsNullOrWhiteSpace(SearchText)) { return; }
+            EmptyFolderCollection.Clear();
+            EmptyFileCollection.Clear();
+            Folders = EmptyFolderCollection;
+            Files = EmptyFileCollection;
             if (Preferences.Default.Get(PreferencesService.FuzzyStringMatchKey, true))
             {
                 var fuzzyStringMatchingThreshold = double.Parse(Preferences.Default.Get(PreferencesService.FuzzyStringMatchThresholdKey, "90.0"));
                 var t1 = Task.Run(() =>
                 {
-                    Folders = new(photoManagement.MainFolder.Folders.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold || x.Files.Any(y => Fuzz.PartialRatio(y.ShortName, SearchText) > fuzzyStringMatchingThreshold)));
+                    Folders.AddRange(photoManagement.MainFolder.Folders.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold || x.Files.Any(y => Fuzz.PartialRatio(y.ShortName, SearchText) > fuzzyStringMatchingThreshold)));
                 });
                 var t2 = Task.Run(() =>
                 {
-                    Files = new(photoManagement.MainFolder.Files.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold));
+                    Files.AddRange(photoManagement.MainFolder.Files.Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold));
                     photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => Fuzz.PartialRatio(x.ShortName, SearchText) > fuzzyStringMatchingThreshold).ForEach(Files.Add);
                 });
 
@@ -132,11 +156,11 @@ namespace PhotoNotes.ViewModels
             {
                 var t1 = Task.Run(() =>
                 {
-                    Folders = new(photoManagement.MainFolder.Folders.Where(x => x.ShortName.Contains(SearchText) || x.Files.Any(y => y.ShortName.Contains(SearchText))));
+                    Folders.AddRange(photoManagement.MainFolder.Folders.Where(x => x.ShortName.Contains(SearchText) || x.Files.Any(y => y.ShortName.Contains(SearchText))));
                 });
                 var t2 = Task.Run(() =>
                 {
-                    Files = new(photoManagement.MainFolder.Files.Where(x => x.ShortName.Contains(SearchText)));
+                    Files.AddRange(photoManagement.MainFolder.Files.Where(x => x.ShortName.Contains(SearchText)));
                     photoManagement.MainFolder.Folders.SelectMany(x => x.Files).Where(x => x.ShortName.Contains(SearchText)).ForEach(Files.Add);
                 });
 
@@ -157,16 +181,20 @@ namespace PhotoNotes.ViewModels
         }
 
         [RelayCommand]
-        public void SelectFolder(string name)
+        public async Task SelectFolder(string name)
         {
             var folder = Folders.Single(x => x.CurrPath == name);
-            CurrFolder = folder.ShortName;
+            await Shell.Current.GoToAsync($"{nameof(FolderView)}", new Dictionary<string, object>
+            {
+                { nameof(FolderViewModel.Folder), folder }
+            });
+            /*CurrFolder = folder.ShortName;
 
             Files = folder.Files;
             Folders = EmptyFolderCollection;
 
             OnPropertyChanged(nameof(HasFolders));
-            OnPropertyChanged(nameof(Files));
+            OnPropertyChanged(nameof(Files));*/
         }
     }
 }

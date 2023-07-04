@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:extensions="clr-namespace:PhotoNotes.Extensions"
-    xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels">
+    xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels"
+    Shell.PresentationMode="ModalAnimated">
 
     <VerticalStackLayout Padding="10" Spacing="5" BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
         <Label FontSize="Large">Save Options</Label>
@@ -15,7 +16,6 @@
             IsChecked="{Binding SaveToFolder}"
             SelectedBG="Green"
             Text="Save To Folder" />
-
 
         <VerticalStackLayout Spacing="5">
 
@@ -44,8 +44,6 @@
                     HorizontalOptions="End"
                     Text="Save" />
             </Grid>
-
         </VerticalStackLayout>
-
     </VerticalStackLayout>
 </ContentPage>

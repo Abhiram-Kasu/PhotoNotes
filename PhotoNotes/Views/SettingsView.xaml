@@ -4,7 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:extensions="clr-namespace:PhotoNotes.Extensions"
-    Title="Preferences">
+    Title="Preferences"
+    Shell.PresentationMode="Animated"
+    Shell.TabBarIsVisible="False">
+    <Shell.TitleView>
+        <Label
+            Margin="5,0,5,0"
+            FontSize="Large"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+            Preferences
+        </Label>
+    </Shell.TitleView>
     <ScrollView>
 
         <VerticalStackLayout Padding="10">
@@ -42,9 +53,6 @@
                 IsEnabled="{Binding CanClearTMPFolder}"
                 Text="{Binding ClearTMPFolderText}"
                 TextColor="White" />
-
-
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

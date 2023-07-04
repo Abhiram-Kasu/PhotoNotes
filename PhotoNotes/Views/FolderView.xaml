@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:PhotoNotes.Models"
-             xmlns:fonts="using:PhotoNotes.Fonts"
-             xmlns:viewmodels="using:PhotoNotes.ViewModels"
-             x:Class="PhotoNotes.Views.FolderView"
-             Title="FolderView">
+<ContentPage
+    x:Class="PhotoNotes.Views.FolderView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:fonts="using:PhotoNotes.Fonts"
+    xmlns:models="clr-namespace:PhotoNotes.Models"
+    xmlns:viewmodels="using:PhotoNotes.ViewModels">
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*, auto">
+            <Label
+                Margin="5"
+                FontSize="Large"
+                HorizontalOptions="Center"
+                Text="{Binding Folder.ShortName}"
+                VerticalOptions="Center" />
+            <ImageButton
+                Grid.Column="1"
+                Margin="10"
+                Command="{Binding GoToSettingsCommand}"
+                HeightRequest="30"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="30">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="MaterialDesign"
+                        Glyph="{x:Static fonts:IconFont.Tune}"
+                        Color="{AppThemeBinding Dark=White,
+                                                Light=Black}" />
+                </ImageButton.Source>
+            </ImageButton>
+        </Grid>
+    </Shell.TitleView>
     <ContentPage.Resources>
         <DataTemplate x:Key="FileItemTemplate" x:DataType="models:FileItem">
             <Border
@@ -74,8 +100,7 @@
                 Padding="5"
                 BackgroundColor="{AppThemeBinding Dark=#04151F,
                                                   Light={StaticResource Primary}}"
-                CornerRadius="5"
-                >
+                CornerRadius="5">
 
                 <Grid RowDefinitions="50, *">
                     <HorizontalStackLayout Margin="5,0,5,0">
@@ -110,8 +135,8 @@
                 </Grid>
 
             </Frame>
-                
+
         </VerticalStackLayout>
     </ScrollView>
-    
+
 </ContentPage>

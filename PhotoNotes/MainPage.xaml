@@ -9,15 +9,42 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewmodels="clr-namespace:PhotoNotes.ViewModels"
     xmlns:views="clr-namespace:PhotoNotes.Views"
+    Title="Files"
     Shell.TabBarBackgroundColor="Black"
     Shell.TabBarForegroundColor="AliceBlue"
-    Shell.TabBarIsVisible="True">
+    Shell.TabBarIsVisible="True"
+    Shell.TitleColor="{StaticResource Gray950}">
     <Shell.BackButtonBehavior>
-        <BackButtonBehavior
-            Command="{Binding BackToHomeCommand}"
-            IsEnabled="{Binding ShowHomeButton}"
-            IsVisible="{Binding ShowHomeButton}" />
+        <BackButtonBehavior IsEnabled="False" IsVisible="False" />
     </Shell.BackButtonBehavior>
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*, auto">
+            <Label
+                Margin="5,0,5,0"
+                FontSize="Large"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                Files
+            </Label>
+            <ImageButton
+                Grid.Column="1"
+                Margin="10,0,10,0"
+                BackgroundColor="Transparent"
+                Command="{Binding GoToSettingsCommand}"
+                HeightRequest="30"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="30">
+                <ImageButton.Source>
+                    <FontImageSource
+                        FontFamily="MaterialDesign"
+                        Glyph="{x:Static fonts:IconFont.CogOutline}"
+                        Color="{AppThemeBinding Dark=White,
+                                                Light=Black}" />
+                </ImageButton.Source>
+            </ImageButton>
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage.Resources>
         <DataTemplate x:Key="FolderItemTemplate" x:DataType="models:FolderItem">
@@ -66,15 +93,10 @@
 
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">
-                        <VisualState Name="Normal">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="Black" />
-                            </VisualState.Setters>
-                        </VisualState>
-
+                        <VisualState Name="Normal" />
                         <VisualState Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="White" />
+                                <Setter Property="BackgroundColor" Value="Transparent" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -138,101 +160,98 @@
     <ScrollView BackgroundColor="{AppThemeBinding Dark=Black, Light=White}">
 
         <VerticalStackLayout>
-            <HorizontalStackLayout Margin="10,0,0,0">
-
-                <SearchBar
+            <Frame
+                Margin="5"
+                BackgroundColor="{AppThemeBinding Dark={StaticResource Gray950},
+                                                  Light={StaticResource TertiaryBrush}}"
+                BorderColor="Transparent"
+                CornerRadius="5">
+                <Entry
                     x:Name="SearchBar"
                     Grid.Column="0"
-                    Margin="5"
-                    HorizontalOptions="StartAndExpand"
-                    IsVisible="{Binding IsOnHomeScreen}"
                     Placeholder="Search for an item here:"
-                    SearchCommand="{Binding SearchCommand}"
+                    ReturnCommand="{Binding SearchCommand}"
+                    Completed="SearchBar_Completed"
                     Text="{Binding SearchText}">
-                    <SearchBar.Behaviors>
-                        <toolkit:EventToCommandBehavior Command="{Binding SearchCommand}" EventName="TextChanged" />
-                    </SearchBar.Behaviors>
-                </SearchBar>
+                    <Entry.Behaviors>
+                        <toolkit:UserStoppedTypingBehavior
+                            Command="{Binding SearchCommand}"
+                            ShouldDismissKeyboardAutomatically="False"
+
+                            StoppedTypingTimeThreshold="750" />
+                    </Entry.Behaviors>
+                </Entry>
+            </Frame>
+
+            <Grid>
                 <ActivityIndicator
                     Grid.Column="1"
                     Margin="2"
-                    HorizontalOptions="End"
-                    IsVisible="{Binding SearchCommand.IsRunning}" />
-                <ImageButton
-                    Command="{Binding GoToSettingsCommand}"
-                    HeightRequest="30"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    WidthRequest="30">
-                    <ImageButton.Source>
-                        <FontImageSource
-                            FontFamily="MaterialDesign"
-                            Glyph="{x:Static fonts:IconFont.Tune}"
-                            Color="{AppThemeBinding Dark=White,
-                                                    Light=Black}" />
-                    </ImageButton.Source>
-                </ImageButton>
-            </HorizontalStackLayout>
+                    IsVisible="{Binding SearchCommand.IsRunning}"
+                    VerticalOptions="Center" />
+                <VerticalStackLayout>
+                    <Frame
+                        Margin="5"
+                        Padding="5"
+                        BackgroundColor="{AppThemeBinding Dark=#04151F,
+                                                          Light={StaticResource Primary}}"
+                        CornerRadius="5"
+                        IsVisible="{Binding HasFolders}">
+                        <Grid Padding="5" RowDefinitions="50,auto">
+                            <Label
+                                Grid.Row="0"
+                                Margin="5,0,0,0"
+                                FontSize="Medium"
+                                Text="Folders" />
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource FolderItemTemplate}"
+                                ItemsSource="{Binding Folders}"
+                                SelectionChanged="FolderCollectionView_SelectionChanged"
+                                SelectionMode="Single" />
+                        </Grid>
+                    </Frame>
+                    <Frame
+                        Margin="5"
+                        Padding="5"
+                        BackgroundColor="{AppThemeBinding Dark=#04151F,
+                                                          Light={StaticResource Primary}}"
+                        CornerRadius="5"
+                        IsVisible="{Binding HasFiles}">
 
-            <Frame
-                Margin="5"
-                Padding="5"
-                BackgroundColor="{AppThemeBinding Dark=#04151F,
-                                                  Light={StaticResource Primary}}"
-                CornerRadius="5"
-                IsVisible="{Binding HasFolders}">
-                <Grid Padding="5" RowDefinitions="50,auto">
-                    <Label
-                        Grid.Row="0"
-                        Margin="5,0,0,0"
-                        FontSize="Medium"
-                        Text="Folders" />
-                    <CollectionView
-                        Grid.Row="1"
-                        ItemTemplate="{StaticResource FolderItemTemplate}"
-                        ItemsSource="{Binding Folders}"
-                        SelectionChanged="FolderCollectionView_SelectionChanged"
-                        SelectionMode="Single" />
-                </Grid>
-            </Frame>
-            <Frame
-                Margin="5"
-                Padding="5"
-                BackgroundColor="{AppThemeBinding Dark=#04151F,
-                                                  Light={StaticResource Primary}}"
-                CornerRadius="5"
-                IsVisible="{Binding HasFiles}">
+                        <Grid RowDefinitions="50, *">
+                            <HorizontalStackLayout Margin="5,0,5,0">
+                                <ImageButton
+                                    Margin="0,0,10,0"
+                                    Command="{Binding BackToHomeCommand}"
+                                    CornerRadius="5"
+                                    HeightRequest="30"
+                                    HorizontalOptions="Start"
+                                    IsVisible="{Binding ShowHomeButton}"
+                                    WidthRequest="30">
 
-                <Grid RowDefinitions="50, *">
-                    <HorizontalStackLayout Margin="5,0,5,0">
-                        <ImageButton
-                            Margin="0,0,10,0"
-                            Command="{Binding BackToHomeCommand}"
-                            CornerRadius="5"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            IsVisible="{Binding ShowHomeButton}"
-                            WidthRequest="30">
+                                    <ImageButton.Source>
+                                        <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.ArrowLeft}" />
+                                    </ImageButton.Source>
+                                </ImageButton>
+                                <Label
+                                    FontSize="Medium"
+                                    HorizontalOptions="Start"
+                                    Text="{Binding CurrTitle}"
+                                    VerticalOptions="Center" />
+                            </HorizontalStackLayout>
 
-                            <ImageButton.Source>
-                                <FontImageSource FontFamily="MaterialDesign" Glyph="{x:Static fonts:IconFont.ArrowLeft}" />
-                            </ImageButton.Source>
-                        </ImageButton>
-                        <Label
-                            FontSize="Medium"
-                            HorizontalOptions="Start"
-                            Text="{Binding CurrTitle}"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-
-                    <CollectionView
-                        Grid.Row="1"
-                        ItemTemplate="{StaticResource FileItemTemplate}"
-                        ItemsSource="{Binding Files}"
-                        SelectionChanged="FileCollectionView_SelectionChanged"
-                        SelectionMode="Single" />
-                </Grid>
-            </Frame>
+                            <CollectionView
+                                Grid.Row="1"
+                                ItemTemplate="{StaticResource FileItemTemplate}"
+                                ItemsSource="{Binding Files}"
+                                SelectionChanged="FileCollectionView_SelectionChanged"
+                                SelectionMode="Single" />
+                        </Grid>
+                    </Frame>
+                </VerticalStackLayout>
+            </Grid>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

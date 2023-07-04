@@ -15,13 +15,16 @@ namespace PhotoNotes.ViewModels
     public partial class FolderViewModel : ObservableObject
     {
         private readonly IPhotoManagement photoManagement;
+        private readonly MainPageViewModel mainPageViewModel;
 
-        public FolderViewModel(IPhotoManagement pm)
+        public FolderViewModel(IPhotoManagement pm, MainPageViewModel tempVm)
         {
             photoManagement = pm;
+            mainPageViewModel = tempVm;
         }
 
-        public FolderItem Folder { get; set; }
+        private FolderItem _folderItem = default!;
+        public FolderItem Folder { get => _folderItem; set => SetProperty(ref _folderItem, value); }
 
         [RelayCommand]
         public void DeleteFileItem(string name)
@@ -35,5 +38,8 @@ namespace PhotoNotes.ViewModels
             //TODO
             await Shell.Current.GoToAsync($"secret/{nameof(PhotoView)}?{nameof(PhotoViewModel.PhotoSource)}={name}");
         }
+
+        [RelayCommand]
+        public async Task GoToSettings() => await mainPageViewModel.GoToSettings();
     }
 }
