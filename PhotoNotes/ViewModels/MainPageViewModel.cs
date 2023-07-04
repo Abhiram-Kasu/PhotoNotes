@@ -49,10 +49,14 @@ namespace PhotoNotes.ViewModels
             //BindingBase.EnableCollectionSynchronization(EmptyFolderCollection, null, callBack);
             //BindingBase.EnableCollectionSynchronization(EmptyFileCollection, null, callBack);
         }
+
         //Search Bar Bug Workaround
+
         #region Search Bar Bug Workaround
+
         public double ScreenWidth => DeviceDisplay.Current.MainDisplayInfo.Width / DeviceDisplay.Current.MainDisplayInfo.Density;
-        #endregion
+
+        #endregion Search Bar Bug Workaround
 
         public string CurrTitle => CurrFolder ?? "Files";
         public ObservableCollection<FileItem> Files { get; set; }
@@ -91,15 +95,21 @@ namespace PhotoNotes.ViewModels
         [RelayCommand]
         public void DeleteFileItem(string name)
         {
-            if (CurrFolder is null)
+            if (photoManagement.MainFolder.Files.Any(x => x.CurrPath == name))
             {
                 photoManagement.DeleteFile(null, name);
             }
             else
             {
-                photoManagement.DeleteFile(CurrFolder, name);
+                photoManagement.DeleteFile(photoManagement.MainFolder.Folders.First(x => x.Files.Any(y => y.CurrPath == name)).ShortName, name);
             }
-            //Files.RemoveAll(x => x.CurrPath == name);
+            //Indicated if user is searching for an item or not
+            if (!ReferenceEquals(Files, photoManagement.MainFolder.Files))
+            {
+                Files.RemoveAll(x => x.CurrPath == name);
+                MainThread.BeginInvokeOnMainThread(async () => await Search());
+            }
+            
         }
 
         [RelayCommand]
